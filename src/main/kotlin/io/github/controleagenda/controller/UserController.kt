@@ -24,16 +24,4 @@ class UserController {
 
         return userService.getUserById(id)
     }
-
-
-//    @PostMapping()
-//
-////    fun createSegments(@RequestBody user: User): User? {
-////
-////
-////
-////        val userRetorned : User? = userRepository?.findByName(name = user.login)
-////
-////        return userRetorned
-////    }
 }

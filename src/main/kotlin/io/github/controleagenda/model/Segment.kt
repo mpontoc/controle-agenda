@@ -6,14 +6,15 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 
 @Entity
-data class Segments(
+data class Segment(
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    @Id
+    val id: Long?,
     val segment: String
 
 ) {
     constructor() : this(
         -1, "",
     )
+
 }

@@ -1,7 +1,7 @@
 package io.github.controleagenda.controller
 
-import io.github.controleagenda.model.Segments
-import io.github.controleagenda.services.SegmentsService
+import io.github.controleagenda.model.Segment
+import io.github.controleagenda.services.SegmentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -11,27 +11,34 @@ import java.util.*
 class SegmentoController {
 
     @Autowired
-    lateinit var segmentsService: SegmentsService
+    lateinit var segmentService: SegmentService
 
     @GetMapping()
-    fun getAllUsers() =
-        segmentsService.getSegments()
+    fun getAllSegments() =
+        segmentService.getAllSegments()
 
     @GetMapping("/{id}")
-    fun getSegmentoById(@PathVariable id: Long): Optional<Segments?> {
-
-        return segmentsService.getSegmentById(id)
+    fun getSegmentById(@PathVariable id: Long): Optional<Segment?> {
+        return segmentService.getSegmentById(id)
     }
 
+    @PostMapping()
+    fun createSegment(@RequestBody segment: Segment): Segment {
+        val idSequence = getAllSegments().count().toLong() + 1
+        return segmentService.addSegment(idSequence , segment)
+    }
 
-//    @PostMapping()
-//
-////    fun createSegments(@RequestBody user: User): User? {
-////
-////
-////
-////        val userRetorned : User? = userRepository?.findByName(name = user.login)
-////
-////        return userRetorned
-////    }
+    @DeleteMapping("/{id}")
+    fun deleteSegment(@PathVariable id: Long) {
+        segmentService.deleteSegment(id)
+    }
+
+    @PutMapping("/{id}")
+    fun editSegment(
+        @PathVariable id: Long,
+        @RequestBody segments: Segment
+    ) {
+        segmentService.updateSegments(id, segments)
+    }
+
 }

@@ -8,7 +8,7 @@ import javax.persistence.Id
 @Entity
 data class User(
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     val id: Long,
     val usuario: String,
     val senha: String,
