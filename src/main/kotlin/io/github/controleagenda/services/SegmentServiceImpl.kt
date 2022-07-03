@@ -39,7 +39,12 @@ class SegmentServiceImpl : SegmentService {
     override fun updateSegments(id: Long, segment: Segment): Segment {
 
         deleteSegment(id)
-        return addSegment(id, segment)
+
+        if (segment.id != null) {
+            return addSegment(segment.id, segment)
+        } else {
+            return addSegment(id, segment)
+        }
     }
 
 
