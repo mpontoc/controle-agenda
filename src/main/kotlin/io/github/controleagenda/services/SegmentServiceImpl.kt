@@ -31,21 +31,50 @@ class SegmentServiceImpl : SegmentService {
 
     }
 
-    override fun getAllSegments(): MutableIterable<Segment?> {
+    override fun getAllSegments(): List<Segment?> {
 
-        return repository.findAll()
+        if (repository.findAll().count() <= 1) {
+            return initSegments()
+        } else {
+            return repository.findAll()
+        }
     }
 
     override fun updateSegments(id: Long, segment: Segment): Segment {
 
         deleteSegment(id)
 
-        if (segment.id != null) {
+        if (segment.id!! >= 1) {
             return addSegment(segment.id, segment)
         } else {
             return addSegment(id, segment)
         }
     }
 
+    fun initSegments(): List<Segment> {
+
+        repository.save(
+            Segment(1, "Academia")
+        )
+        repository.save(
+            Segment(2, "Alimentação")
+        )
+        repository.save(
+            Segment(3, "Educação")
+        )
+        repository.save(
+            Segment(4, "Esporte")
+        )
+        repository.save(
+            Segment(5, "Familiar")
+        )
+        repository.save(
+            Segment(6, "Saúde")
+        )
+        repository.save(Segment(7, "Outros"))
+
+        return repository.findAll() as List<Segment>
+
+    }
 
 }
