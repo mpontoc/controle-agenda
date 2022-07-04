@@ -3,7 +3,10 @@ package io.github.controleagenda.controller
 import io.github.controleagenda.model.Segment
 import io.github.controleagenda.services.SegmentService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.util.UriComponentsBuilder
 import java.util.*
 
 @RestController
@@ -23,22 +26,23 @@ class SegmentoController {
     }
 
     @PostMapping()
-    fun createSegment(@RequestBody segment: Segment): Segment {
+    fun createSegment(@RequestBody segment: Segment, uriBuilder: UriComponentsBuilder): ResponseEntity<Segment> {
         val idSequence = getAllSegments().count().toLong() + 1
-        return segmentService.addSegment(idSequence , segment)
-    }
-
-    @DeleteMapping("/{id}")
-    fun deleteSegment(@PathVariable id: Long) {
-        segmentService.deleteSegment(id)
+        val uri = uriBuilder.path("/${idSequence}/").build().toUri()
+        return ResponseEntity.created(uri).body(segmentService.addSegment(idSequence, segment))
     }
 
     @PutMapping("/{id}")
     fun editSegment(
         @PathVariable id: Long,
         @RequestBody segments: Segment
-    ) {
-        segmentService.updateSegments(id, segments)
+    ): ResponseEntity<Segment> {
+        return ResponseEntity.ok(segmentService.updateSegments(id, segments))
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteSegment(@PathVariable id: Long) {
+        segmentService.deleteSegment(id)
+    }
 }
