@@ -11,7 +11,7 @@ import java.util.*
 
 @RestController
 @RequestMapping("/segmentos")
-class SegmentoController {
+class SegmentController {
 
     @Autowired
     lateinit var segmentService: SegmentService
