@@ -44,9 +44,7 @@ class SegmentServiceImpl : SegmentService {
     }
 
     override fun getSegmentById(id: Long): Optional<Segment?> {
-
         return repository.findById(id)
-
     }
 
     override fun getAllSegments(): List<Segment?> {
@@ -86,7 +84,6 @@ class SegmentServiceImpl : SegmentService {
         repository.save(
             Segment(6, "Saúde")
         )
-
         return repository.findAll() as List<Segment>
     }
 

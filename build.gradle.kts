@@ -48,3 +48,8 @@ tasks.test {
     finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
 }
 
+jacoco {
+    toolVersion = "0.8.8"
+    reportsDirectory.set(layout.buildDirectory.dir("customJacocoReportDir"))
+}
+

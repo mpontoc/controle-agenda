@@ -21,8 +21,11 @@ class SegmentController {
         segmentService.getAllSegments()
 
     @GetMapping("/{id}")
-    fun getSegmentById(@PathVariable id: Long): Optional<Segment?> {
-        return segmentService.getSegmentById(id)
+    fun getSegmentById(@PathVariable id: Long): ResponseEntity<Optional<Segment?>> {
+        val segmentFinded: Optional<Segment?> = segmentService.getSegmentById(id)
+        return if (!segmentFinded.isEmpty)
+            ResponseEntity.ok(segmentFinded)
+        else ResponseEntity.notFound().build()
     }
 
     @PostMapping()
@@ -46,3 +49,5 @@ class SegmentController {
         segmentService.deleteSegment(id)
     }
 }
+
+

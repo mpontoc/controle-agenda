@@ -21,7 +21,7 @@ class SegmentControllerTest {
     @Test
     fun testGetAllSegmentsByController() {
 
-        var response: Response =
+        val response: Response =
             RestAssured
                 .given()
                 .accept(ContentType.JSON)
@@ -39,7 +39,7 @@ class SegmentControllerTest {
     }
 
     @Test
-    fun testGetSegmentosByIdController() {
+    fun testGetSegmentsByIdController() {
         val response: Response =
             RestAssured
                 .given()
@@ -58,21 +58,38 @@ class SegmentControllerTest {
     }
 
     @Test
-    fun testGetSegmentosByIdControllerNotFound() {
+    fun testGetSegmentsByIdControllerNotFound() {
+
+        RestAssured
+            .given()
+            .accept(ContentType.JSON)
+            .`when`()
+            .get("/segmentos/99")
+            .then()
+            .statusCode(404)
+            .log()
+            .all().extract().response()
+    }
+
+    @Test
+    fun testPostToCreateNewSegmentByController() {
         val response: Response =
             RestAssured
                 .given()
-                .accept(ContentType.JSON)
+                .contentType("application/json")
                 .`when`()
-                .get("/segmentos/99")
+                .body(
+                    "{\"segment\": \"test-rest-assured\"}"
+                )
+                .post("/segmentos")
                 .then()
-                .statusCode(200)
+                .statusCode(201)
                 .log()
                 .all().extract().response()
 
         Assertions.assertEquals(
-            "null",
-            response.body.asString()
+            "test-rest-assured",
+            response.body.jsonPath().getJsonObject<JSONObject>("segment")
         )
     }
 
