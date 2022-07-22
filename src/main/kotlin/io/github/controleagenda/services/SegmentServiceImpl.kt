@@ -49,7 +49,9 @@ class SegmentServiceImpl : SegmentService {
 
     override fun getAllSegments(): List<Segment?> {
 
-        if (repository.findAll().count() <= 1) {
+        val allSegments = repository.findAll().count()
+
+        if (allSegments <= 1) {
             return initSegments()
         }
         return repository.findAll()

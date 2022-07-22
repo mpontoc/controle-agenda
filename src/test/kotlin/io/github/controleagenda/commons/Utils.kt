@@ -14,6 +14,12 @@ open class Utils {
             Segment(6, "Saúde")
         )
     }
+
+    fun listSegmentOnlyOne(): List<Segment> {
+        return listOf(
+            Segment(1, "Academia")
+        )
+    }
 }
 
 

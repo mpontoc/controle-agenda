@@ -1,13 +1,14 @@
 package io.github.controleagenda.services
 
-import io.github.controleagenda.model.Segment
+import io.github.controleagenda.commons.Utils
+import io.github.controleagenda.repository.SegmentsRepository
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.Mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.util.Assert
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import java.util.*
+import org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup
 
 @SpringBootTest
 class SegmentServiceTest {
@@ -15,38 +16,46 @@ class SegmentServiceTest {
     @Autowired
     lateinit var segmentService: SegmentService
 
+    @Mock
+    lateinit var util: Utils
+
+    @Mock
+    lateinit var repository: SegmentsRepository
+
+    @BeforeEach
+    fun setup() {
+        standaloneSetup(segmentService)
+    }
+
     @Test
-    fun getAllSegments() {
+    fun getAllSegmentsService() {
 
         val segments = segmentService.getAllSegments()
-        Assert.hasText("Academia" , segments[0].toString())
 
-
+        if (segments.toString().contains(util.listSegmentsDefault().get(1).segment))
+            Assertions.assertTrue(true)
+        else
+            Assertions.assertTrue(false)
     }
 
-    @GetMapping("/{id}")
-    fun getSegmentById(@PathVariable id: Long): Optional<Segment?> {
-        return segmentService.getSegmentById(id)
+    @Test
+    fun getSegmentByIdService() {
+        val segment = segmentService.getSegmentById(2)
+
+        if (segment.toString().contains(util.listSegmentsDefault().get(1).segment))
+            Assertions.assertTrue(true)
+        else
+            Assertions.assertTrue(false)
     }
 
-//    @PostMapping()
-//    fun createSegment(@RequestBody segment: Segment, uriBuilder: UriComponentsBuilder): ResponseEntity<Segment> {
-//        val idSequence = getAllSegments().count().toLong() + 1
-//        val uri = uriBuilder.path("/${idSequence}/").build().toUri()
-//        return ResponseEntity.created(uri).body(segmentService.addSegment(idSequence, segment))
-//    }
-//
-//    @PutMapping("/{id}")
-//    fun editSegment(
-//        @PathVariable id: Long,
-//        @RequestBody segments: Segment
-//    ): ResponseEntity<Segment> {
-//        return ResponseEntity.ok(segmentService.updateSegments(id, segments))
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    fun deleteSegment(@PathVariable id: Long) {
-//        segmentService.deleteSegment(id)
-//    }
+    @Test
+    fun getSegmentByInvalidIdService() {
+        val segment = segmentService.getSegmentById(99)
+
+        if (segment.isEmpty)
+            Assertions.assertTrue(true)
+        else
+            Assertions.assertTrue(false)
+    }
+
 }
