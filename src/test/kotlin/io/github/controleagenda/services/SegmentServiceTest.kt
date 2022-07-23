@@ -1,14 +1,12 @@
 package io.github.controleagenda.services
 
 import io.github.controleagenda.commons.Utils
-import io.github.controleagenda.repository.SegmentsRepository
+import io.github.controleagenda.model.Segment
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup
 
 @SpringBootTest
 class SegmentServiceTest {
@@ -18,14 +16,6 @@ class SegmentServiceTest {
 
     @Mock
     lateinit var util: Utils
-
-    @Mock
-    lateinit var repository: SegmentsRepository
-
-    @BeforeEach
-    fun setup() {
-        standaloneSetup(segmentService)
-    }
 
     @Test
     fun getAllSegmentsService() {
@@ -57,5 +47,19 @@ class SegmentServiceTest {
         else
             Assertions.assertTrue(false)
     }
+
+    @Test
+    fun deleteSegmentService() {
+        util.createSegment(segmentService, 98, "testUnitario")
+        segmentService.deleteSegment(98)
+    }
+
+    @Test
+    fun editSegmentService() {
+        util.createSegment(segmentService, 110, "segmentToEdit")
+        segmentService.updateSegments(110, Segment(110, "segmentEdited"))
+        segmentService.deleteSegment(110)
+    }
+
 
 }

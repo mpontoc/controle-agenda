@@ -1,6 +1,7 @@
 package io.github.controleagenda.controller
 
 import io.github.controleagenda.commons.Utils
+import io.github.controleagenda.services.SegmentService
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import io.restassured.response.Response
@@ -8,15 +9,17 @@ import org.json.JSONObject
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-@AutoConfigureMockMvc
 class SegmentControllerTest {
 
     @Mock
     lateinit var util: Utils
+
+    @Autowired
+    lateinit var segmentService: SegmentService
 
     @Test
     fun testGetAllSegmentsByController() {
@@ -91,6 +94,41 @@ class SegmentControllerTest {
             "test-rest-assured",
             response.body.jsonPath().getJsonObject<JSONObject>("segment")
         )
+    }
+
+    @Test
+    fun deleteSegmentByController() {
+        util.createSegment(segmentService, 98, "testUnitario")
+
+        RestAssured
+            .given()
+            .contentType("application/json")
+            .`when`()
+            .delete("/segmentos/98")
+            .then()
+            .statusCode(204)
+            .log()
+            .all().extract().response()
+    }
+
+    @Test
+    fun editSegmentByController() {
+        util.createSegment(segmentService, 110, "segmentToEdit")
+
+        RestAssured
+            .given()
+            .contentType("application/json")
+            .`when`()
+            .body(
+                "{\"segment\": \"segmentEdited\"}"
+            )
+            .put("/segmentos/110")
+            .then()
+            .statusCode(200)
+            .log()
+            .all().extract().response()
+
+        segmentService.deleteSegment(110)
     }
 
 }
