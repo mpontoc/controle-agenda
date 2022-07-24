@@ -4,6 +4,7 @@ import io.github.controleagenda.commons.Utils
 import io.github.controleagenda.model.Segment
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.mockito.Mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -22,7 +23,7 @@ class SegmentServiceTest {
 
         val segments = segmentService.getAllSegments()
 
-        if (segments.toString().contains(util.listSegmentsDefault().get(1).segment))
+        if (segments.toString().contains(util.listSegmentsDefault()[1].segment))
             Assertions.assertTrue(true)
         else
             Assertions.assertTrue(false)
@@ -32,7 +33,7 @@ class SegmentServiceTest {
     fun getSegmentByIdService() {
         val segment = segmentService.getSegmentById(2)
 
-        if (segment.toString().contains(util.listSegmentsDefault().get(1).segment))
+        if (segment.toString().contains(util.listSegmentsDefault()[1].segment))
             Assertions.assertTrue(true)
         else
             Assertions.assertTrue(false)
@@ -48,10 +49,21 @@ class SegmentServiceTest {
             Assertions.assertTrue(false)
     }
 
+
     @Test
     fun deleteSegmentService() {
         util.createSegment(segmentService, 98, "testUnitario")
         segmentService.deleteSegment(98)
+    }
+
+    @Test
+    fun deleteSegmentNoPermissionService() {
+        val exception = assertThrows<RuntimeException> {
+            segmentService.deleteSegment(3)
+        }
+        val exceptionExpected = "Não é possível apagar os valores default"
+        Assertions.assertEquals(exceptionExpected, exception.message)
+
     }
 
     @Test
