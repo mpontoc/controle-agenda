@@ -5,6 +5,7 @@ import io.github.controleagenda.services.SegmentService
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import io.restassured.response.Response
+import net.minidev.json.JSONValue
 import org.json.JSONObject
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -12,7 +13,7 @@ import org.mockito.Mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class SegmentControllerTest {
 
     @Mock
@@ -76,14 +77,17 @@ class SegmentControllerTest {
 
     @Test
     fun testPostToCreateNewSegmentByController() {
+
+        val body = mapOf(
+            "id" to "98",
+            "segment" to "test-rest-assured"
+        )
         val response: Response =
             RestAssured
                 .given()
                 .contentType("application/json")
                 .`when`()
-                .body(
-                    "{\"segment\": \"test-rest-assured\"}"
-                )
+                .body(body)
                 .post("/segmentos")
                 .then()
                 .statusCode(201)
@@ -94,6 +98,9 @@ class SegmentControllerTest {
             "test-rest-assured",
             response.body.jsonPath().getJsonObject<JSONObject>("segment")
         )
+
+        var idToRemove: String = JSONValue.toJSONString(response.body.jsonPath().getJsonObject<JSONObject>("id"))
+        segmentService.deleteSegment(idToRemove.toLong())
     }
 
     @Test
