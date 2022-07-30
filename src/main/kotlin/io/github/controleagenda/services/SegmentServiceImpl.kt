@@ -1,16 +1,17 @@
 package io.github.controleagenda.services
 
 import io.github.controleagenda.model.Segment
-import io.github.controleagenda.repository.SegmentsRepository
+import io.github.controleagenda.repository.SegmentRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import io.github.controleagenda.util.Util
 import java.util.*
 
 @Service
 class SegmentServiceImpl : SegmentService {
 
     @Autowired
-    lateinit var repository: SegmentsRepository
+    lateinit var repository: SegmentRepository
 
     override fun addSegment(id: Long, segment: Segment): Segment {
 
@@ -50,9 +51,10 @@ class SegmentServiceImpl : SegmentService {
     override fun getAllSegments(): List<Segment?> {
 
         val allSegments = repository.findAll().count()
+        val util = Util()
 
         if (allSegments <= 1) {
-            return initSegments()
+            return util.initSegments(repository)
         }
         return repository.findAll()
     }
@@ -65,28 +67,6 @@ class SegmentServiceImpl : SegmentService {
             return addSegment(segment.id, segment)
         }
         return addSegment(id, segment)
-    }
-
-    fun initSegments(): List<Segment> {
-        repository.save(
-            Segment(1, "Academia")
-        )
-        repository.save(
-            Segment(2, "Alimentação")
-        )
-        repository.save(
-            Segment(3, "Educação")
-        )
-        repository.save(
-            Segment(4, "Esporte")
-        )
-        repository.save(
-            Segment(5, "Familiar")
-        )
-        repository.save(
-            Segment(6, "Saúde")
-        )
-        return repository.findAll() as List<Segment>
     }
 
 }

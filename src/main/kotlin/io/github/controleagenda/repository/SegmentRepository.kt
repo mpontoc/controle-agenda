@@ -6,4 +6,4 @@ import org.springframework.stereotype.Repository
 
 
 @Repository
-interface SegmentsRepository : JpaRepository<Segment?, Long?>
+interface SegmentRepository : JpaRepository<Segment?, Long?>
