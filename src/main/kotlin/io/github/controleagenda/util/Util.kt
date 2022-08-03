@@ -8,22 +8,30 @@ open class Util {
 
     fun initSegments(repository: SegmentRepository): List<Segment> {
         repository.save(
-            Segment(1, "Academia")
+            Segment(
+                1, "Academia"
+            )
         )
         repository.save(
-            Segment(2, "Alimentação")
+            Segment(
+                2, "Alimentação"
+            )
         )
         repository.save(
-            Segment(3, "Educação")
+            Segment(3, "Educação"
+            )
         )
         repository.save(
-            Segment(4, "Esporte")
+            Segment(4, "Esporte"
+            )
         )
         repository.save(
-            Segment(5, "Familiar")
+            Segment(5, "Familiar"
+            )
         )
         repository.save(
-            Segment(6, "Saúde")
+            Segment(6, "Saúde"
+            )
         )
         return repository.findAll() as List<Segment>
     }
