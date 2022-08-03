@@ -3,6 +3,7 @@ package io.github.controleagenda.util
 import io.github.controleagenda.model.Segment
 import io.github.controleagenda.repository.SegmentRepository
 
+@Suppress("UNCHECKED_CAST")
 open class Util {
 
     fun initSegments(repository: SegmentRepository): List<Segment> {

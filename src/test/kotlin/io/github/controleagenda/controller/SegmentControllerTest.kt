@@ -1,7 +1,7 @@
 package io.github.controleagenda.controller
 
 import io.github.controleagenda.commons.Utils
-import io.github.controleagenda.services.SegmentService
+import io.github.controleagenda.services.SubSegmentService
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import io.restassured.response.Response
@@ -20,7 +20,7 @@ class SegmentControllerTest {
     lateinit var util: Utils
 
     @Autowired
-    lateinit var segmentService: SegmentService
+    lateinit var segmentService: SubSegmentService
 
     @Test
     fun testGetAllSegmentsByController() {

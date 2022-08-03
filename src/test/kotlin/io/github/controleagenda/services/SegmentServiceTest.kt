@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest
 class SegmentServiceTest {
 
     @Autowired
-    lateinit var segmentService: SegmentService
+    lateinit var segmentService: SubSegmentService
 
     @Mock
     lateinit var util: Utils

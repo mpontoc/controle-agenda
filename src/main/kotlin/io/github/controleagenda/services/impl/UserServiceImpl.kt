@@ -1,10 +1,10 @@
-package io.github.controleagenda.services
+package io.github.controleagenda.services.impl
 
 import io.github.controleagenda.model.User
 import io.github.controleagenda.repository.UserRepository
+import io.github.controleagenda.services.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class UserServiceImpl: UserService {

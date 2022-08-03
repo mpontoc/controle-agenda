@@ -1,6 +1,7 @@
 package io.github.controleagenda.controller
 
 import io.github.controleagenda.model.Segment
+import io.github.controleagenda.model.SubSegment
 import io.github.controleagenda.services.SegmentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -30,17 +31,21 @@ class SegmentController {
 
     @PostMapping()
     fun createSegment(@RequestBody segment: Segment, uriBuilder: UriComponentsBuilder): ResponseEntity<Segment> {
-        val idSequence = getAllSegments().count().toLong() + 1
+        val idSequence = segmentService.getAllSegments().count().toLong() + 1
         val uri = uriBuilder.path("/${idSequence}/").build().toUri()
-        return ResponseEntity.created(uri).body(segmentService.addSegment(idSequence, segment))
+        return ResponseEntity.created(uri).body(
+            segmentService.addSegment(
+                idSequence, segment
+            )
+        )
     }
 
     @PutMapping("/{id}")
     fun editSegment(
         @PathVariable id: Long,
-        @RequestBody segments: Segment
+        @RequestBody segment: Segment
     ): ResponseEntity<Segment> {
-        return ResponseEntity.ok(segmentService.updateSegments(id, segments))
+        return ResponseEntity.ok(segmentService.updateSegment(id, segment))
     }
 
     @DeleteMapping("/{id}")
