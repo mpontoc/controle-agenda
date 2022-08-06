@@ -32,7 +32,7 @@ class SegmentServiceImpl : SegmentService {
         var subSegmentToSegment: MutableList<SubSegment>
 
         if (allSegments <= 1) {
-            util.initSegments(repository)
+            util.initSegments(repository, subSegmentRepository)
         }
 
         val allSegmentList: MutableList<Segment> = repository.findAll()
@@ -67,10 +67,13 @@ class SegmentServiceImpl : SegmentService {
             return SegmentToReturn(
                 this.repository.save(Segment(id, segment.segment)),
                 mutableListOf(
-                    SubSegment(
-                        subSegmentDefault.id,
-                        subSegmentDefault.subSegment,
-                        subSegmentDefault.message
+                    subSegmentRepository.save(
+                        SubSegment(
+                            subSegmentRepository.findAll().count().toLong() + 1,
+                            subSegmentDefault.subSegment,
+                            subSegmentDefault.message,
+                            Segment(id, segment.segment)
+                        )
                     )
                 )
             )
