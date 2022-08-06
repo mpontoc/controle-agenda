@@ -3,10 +3,10 @@ package io.github.controleagenda.util
 import io.github.controleagenda.model.Segment
 import io.github.controleagenda.repository.SegmentRepository
 
-@Suppress("UNCHECKED_CAST")
 open class Util {
 
-    fun initSegments(repository: SegmentRepository): List<Segment> {
+    fun initSegments(repository: SegmentRepository) {
+
         repository.save(
             Segment(
                 1, "Academia"
@@ -18,21 +18,24 @@ open class Util {
             )
         )
         repository.save(
-            Segment(3, "Educação"
+            Segment(
+                3, "Educação"
             )
         )
         repository.save(
-            Segment(4, "Esporte"
+            Segment(
+                4, "Esporte"
             )
         )
         repository.save(
-            Segment(5, "Familiar"
+            Segment(
+                5, "Familiar"
             )
         )
         repository.save(
-            Segment(6, "Saúde"
+            Segment(
+                6, "Saúde"
             )
         )
-        return repository.findAll() as List<Segment>
     }
 }

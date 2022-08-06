@@ -1,35 +1,14 @@
 package io.github.controleagenda.model
 
-import javax.persistence.*
-import javax.transaction.Transactional
+import javax.persistence.Entity
+import javax.persistence.Id
 
 @Entity
-@Transactional
 data class Segment(
 
     @Id
-    val id: Long?,
-    val segment: String,
+    val id: Long? = null,
+    val segment: String? = ""
 
-    @Embedded
-    @ManyToMany
-    val subSegment: List<SubSegment?> = listOf(
-        SubSegment(
-            1,
-            "crie sua tarefa",
-            "Descreva o seu compromisso"
-        )
-    )
+)
 
-) {
-    constructor() : this(
-        -1, "",
-        listOf(
-            SubSegment(
-                1,
-                "crie sua tarefa",
-                "Descreva o seu compromisso"
-            )
-        )
-    )
-}

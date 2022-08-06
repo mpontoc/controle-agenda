@@ -1,23 +1,17 @@
 package io.github.controleagenda.model
 
-import javax.persistence.Embeddable
-import javax.persistence.Embedded
-import javax.persistence.Entity
-import javax.persistence.Id
-import javax.transaction.Transactional
+import javax.persistence.*
 
 @Entity
-@Embeddable
-data class SubSegment (
+data class SubSegment @JvmOverloads constructor(
 
     @Id
-    val id: Long?,
-    val subSegment: String?,
-    val message: String?
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
+    val subSegment: String? = "",
+    val message: String? = "",
 
-) {
-    constructor() : this(
-        -1, "", ""
-    )
+    @OneToOne
+    val segment: Segment = Segment(-1, "")
 
-}
+)

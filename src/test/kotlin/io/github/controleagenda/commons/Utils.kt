@@ -1,7 +1,6 @@
 package io.github.controleagenda.commons
 
 import io.github.controleagenda.model.Segment
-import io.github.controleagenda.services.SubSegmentService
 
 open class Utils() {
 
@@ -21,10 +20,10 @@ open class Utils() {
             Segment(1, "Academia")
         )
     }
-
-    fun createSegment(segmentService: SubSegmentService, id: Long, segment: String) {
-        segmentService.addSegment(id, Segment(id, segment))
-    }
+//
+//    fun createSegment(segmentService: SubSegmentService, id: Long, segment: String) {
+//        segmentService.addSegment(id, Segment(id, segment))
+//    }
 }
 
 

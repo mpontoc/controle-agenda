@@ -1,7 +1,7 @@
 package io.github.controleagenda.controller
 
 import io.github.controleagenda.model.Segment
-import io.github.controleagenda.model.SubSegment
+import io.github.controleagenda.model.SegmentToReturn
 import io.github.controleagenda.services.SegmentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -30,7 +30,10 @@ class SegmentController {
     }
 
     @PostMapping()
-    fun createSegment(@RequestBody segment: Segment, uriBuilder: UriComponentsBuilder): ResponseEntity<Segment> {
+    fun createSegment(
+        @RequestBody segment: Segment,
+        uriBuilder: UriComponentsBuilder
+    ): ResponseEntity<SegmentToReturn> {
         val idSequence = segmentService.getAllSegments().count().toLong() + 1
         val uri = uriBuilder.path("/${idSequence}/").build().toUri()
         return ResponseEntity.created(uri).body(
@@ -44,7 +47,7 @@ class SegmentController {
     fun editSegment(
         @PathVariable id: Long,
         @RequestBody segment: Segment
-    ): ResponseEntity<Segment> {
+    ): ResponseEntity<SegmentToReturn> {
         return ResponseEntity.ok(segmentService.updateSegment(id, segment))
     }
 
