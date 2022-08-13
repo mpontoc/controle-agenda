@@ -109,6 +109,16 @@ class SegmentServiceImpl : SegmentService {
         if (id in 1..6) {
             throw RuntimeException("Não é possível apagar os valores default")
         } else {
+
+            var subSegmentBySegmentId = subSegmentRepository.findSubSegmentToSegmentID(id)
+
+            println(subSegmentBySegmentId)
+
+            subSegmentBySegmentId.forEach {
+                it!!.id
+                subSegmentRepository.delete(it)
+            }
+
             val segment = repository.findById(id)
             repository.deleteById(id)
             println("O usuario ${segment.get().segment} foi deletado com sucesso")
