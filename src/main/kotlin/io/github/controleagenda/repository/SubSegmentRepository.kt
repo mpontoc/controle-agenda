@@ -14,6 +14,7 @@ import java.util.*
 interface SubSegmentRepository : JpaRepository<SubSegment?, Long?> {
 
     override fun findAll(): MutableList<SubSegment?>
+
     @Query("FROM SubSegment WHERE segment_id = :idSegment")
     fun findSubSegmentToSegmentID(@Param("idSegment") idSegment: Long): MutableList<SubSegment?>
 

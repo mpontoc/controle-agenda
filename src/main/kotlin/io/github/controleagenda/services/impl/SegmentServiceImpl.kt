@@ -9,33 +9,37 @@ import io.github.controleagenda.services.SegmentService
 import io.github.controleagenda.util.Util
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class SegmentServiceImpl : SegmentService {
 
     @Autowired
-    lateinit var repository: SegmentRepository
+    lateinit var segmentRepository: SegmentRepository
 
     @Autowired
     lateinit var subSegmentRepository: SubSegmentRepository
 
-    val subSegmentDefault = SubSegment(1, "crie a sua tarefa", "aqui descreva sua tarefa")
+    val util = Util()
 
-    override fun getSegmentById(id: Long): Optional<Segment?> {
-        return repository.findById(id)
+    override fun getSegmentById(id: Long): SegmentToReturn {
+
+        val segment = segmentRepository.findSegmentById(id)
+
+        return SegmentToReturn(
+            Segment(segment.id, segment.segment),
+            subSegmentRepository.findSubSegmentToSegmentID(id)
+        )
     }
 
-    override fun getAllSegments(): List<SegmentToReturn> {
-        var allSegments = repository.findAll().count()
-        val util = Util()
+    override fun getAllSegments(): MutableList<SegmentToReturn> {
+        var allSegments = segmentRepository.findAll().count()
         var subSegmentToSegment: MutableList<SubSegment>
 
         if (allSegments <= 1) {
-            util.initSegments(repository, subSegmentRepository)
+            util.initSegments(segmentRepository, subSegmentRepository)
         }
 
-        val allSegmentList: MutableList<Segment> = repository.findAll()
+        val allSegmentList: MutableList<Segment> = segmentRepository.findAll()
         var segmentos = mutableListOf<SegmentToReturn>()
         val subSegments = subSegmentRepository.findAll()
 
@@ -57,21 +61,22 @@ class SegmentServiceImpl : SegmentService {
         return segmentos
     }
 
-    override fun addSegment(id: Long, segment: Segment): SegmentToReturn {
+    override fun createSegment(id: Long, segment: Segment): SegmentToReturn {
 
-        val allSegments = repository.findAll()
+        val allSegments = segmentRepository.findAll().count()
         var idSequenceOK = false
         var idSequence: Long = 5
+        val idSubSeg = util.idSequentSubSegment(subSegmentRepository)
 
-        if (allSegments.count() < id && !repository.findById(id).isPresent) {
+        if (allSegments < id && !segmentRepository.findById(id).isPresent) {
             return SegmentToReturn(
-                this.repository.save(Segment(id, segment.segment)),
+                this.segmentRepository.save(Segment(id, segment.segment)),
                 mutableListOf(
                     subSegmentRepository.save(
                         SubSegment(
-                            subSegmentRepository.findAll().count().toLong() + 1,
-                            subSegmentDefault.subSegment,
-                            subSegmentDefault.message,
+                            util.idSequentSubSegment(subSegmentRepository),
+                            util.subSegmentDefault.subSegment,
+                            util.subSegmentDefault.message,
                             Segment(id, segment.segment)
                         )
                     )
@@ -79,29 +84,38 @@ class SegmentServiceImpl : SegmentService {
             )
         } else {
             while (!idSequenceOK) {
-                if (repository.findById(idSequence).isPresent) {
+                if (segmentRepository.findById(idSequence).isPresent) {
                     idSequence++
                 } else {
                     idSequenceOK = true
                 }
             }
         }
+
         return SegmentToReturn(
-            repository.save(
+            segmentRepository.save(
                 Segment(idSequence, segment.segment)
             ),
-            mutableListOf(SubSegment(subSegmentDefault.id, subSegmentDefault.subSegment, subSegmentDefault.message))
+            mutableListOf(
+                subSegmentRepository.save(
+                    SubSegment(
+                        util.idSequentSubSegment(subSegmentRepository),
+                        util.subSegmentDefault.subSegment,
+                        util.subSegmentDefault.message,
+                    )
+                )
+            )
         )
     }
 
-    override fun updateSegment(id: Long, segment: Segment): SegmentToReturn {
+    override fun updateSegment(segment: Segment): SegmentToReturn {
 
-        var submentToEdited = repository.findById(id)
+        val segmentEdited = segmentRepository.save(Segment(segment.id, segment.segment))
 
-        if (segment.id!! >= 1) {
-            return addSegment(segment.id, segment)
-        }
-        return addSegment(id, segment)
+        return SegmentToReturn(
+            segmentEdited,
+            subSegmentRepository.findSubSegmentToSegmentID(segment.id!!)
+        )
     }
 
     override fun deleteSegment(id: Long) {
@@ -109,18 +123,13 @@ class SegmentServiceImpl : SegmentService {
         if (id in 1..6) {
             throw RuntimeException("Não é possível apagar os valores default")
         } else {
-
-            var subSegmentBySegmentId = subSegmentRepository.findSubSegmentToSegmentID(id)
-
-            println(subSegmentBySegmentId)
-
+            val subSegmentBySegmentId = subSegmentRepository.findSubSegmentToSegmentID(id)
             subSegmentBySegmentId.forEach {
                 it!!.id
                 subSegmentRepository.delete(it)
             }
-
-            val segment = repository.findById(id)
-            repository.deleteById(id)
+            val segment = segmentRepository.findById(id)
+            segmentRepository.deleteById(id)
             println("O usuario ${segment.get().segment} foi deletado com sucesso")
         }
     }

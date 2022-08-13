@@ -5,13 +5,13 @@ import io.github.controleagenda.model.SubSegment
 import io.github.controleagenda.repository.SegmentRepository
 import io.github.controleagenda.repository.SubSegmentRepository
 
-open class Util {
+open class Util() {
 
-    fun initSegments(repository: SegmentRepository, subSegmentRepository: SubSegmentRepository) {
+    val subSegmentDefault = SubSegment(1, "crie a sua tarefa", "aqui descreva sua tarefa")
 
-        val subSegmentDefault = SubSegment(1, "crie a sua tarefa", "aqui descreva sua tarefa")
+    fun initSegments(segmentRepository: SegmentRepository, subSegmentRepository: SubSegmentRepository) {
 
-        repository.save(
+        segmentRepository.save(
             Segment(
                 1, "Academia"
             )
@@ -19,14 +19,14 @@ open class Util {
 
         subSegmentRepository.save(
             SubSegment(
-                subSegmentRepository.findAll().count().toLong() + 1,
+                idSequentSubSegment(subSegmentRepository),
                 subSegmentDefault.subSegment,
                 subSegmentDefault.message,
                 Segment(1, "Academia")
             )
         )
 
-        repository.save(
+        segmentRepository.save(
             Segment(
                 2, "Alimentação"
             )
@@ -34,14 +34,14 @@ open class Util {
 
         subSegmentRepository.save(
             SubSegment(
-                subSegmentRepository.findAll().count().toLong() + 1,
+                idSequentSubSegment(subSegmentRepository),
                 subSegmentDefault.subSegment,
                 subSegmentDefault.message,
                 Segment(2, "Alimentação")
             )
         )
 
-        repository.save(
+        segmentRepository.save(
             Segment(
                 3, "Educação"
             )
@@ -49,14 +49,14 @@ open class Util {
 
         subSegmentRepository.save(
             SubSegment(
-                subSegmentRepository.findAll().count().toLong() + 1,
+                idSequentSubSegment(subSegmentRepository),
                 subSegmentDefault.subSegment,
                 subSegmentDefault.message,
                 Segment(3, "Educação")
             )
         )
 
-        repository.save(
+        segmentRepository.save(
             Segment(
                 4, "Esporte"
             )
@@ -64,13 +64,13 @@ open class Util {
 
         subSegmentRepository.save(
             SubSegment(
-                subSegmentRepository.findAll().count().toLong() + 1,
+                idSequentSubSegment(subSegmentRepository),
                 subSegmentDefault.subSegment,
                 subSegmentDefault.message,
                 Segment(4, "Esporte")
             )
         )
-        repository.save(
+        segmentRepository.save(
             Segment(
                 5, "Familiar"
             )
@@ -78,13 +78,13 @@ open class Util {
 
         subSegmentRepository.save(
             SubSegment(
-                subSegmentRepository.findAll().count().toLong() + 1,
+                idSequentSubSegment(subSegmentRepository),
                 subSegmentDefault.subSegment,
                 subSegmentDefault.message,
                 Segment(5, "Familiar")
             )
         )
-        repository.save(
+        segmentRepository.save(
             Segment(
                 6, "Saúde"
             )
@@ -92,11 +92,15 @@ open class Util {
 
         subSegmentRepository.save(
             SubSegment(
-                subSegmentRepository.findAll().count().toLong() + 1,
+                idSequentSubSegment(subSegmentRepository),
                 subSegmentDefault.subSegment,
                 subSegmentDefault.message,
                 Segment(6, "Saúde")
             )
         )
+    }
+
+    fun idSequentSubSegment(subSegmentRepository: SubSegmentRepository): Long {
+        return (subSegmentRepository.findAll().count() + 1).toLong()
     }
 }

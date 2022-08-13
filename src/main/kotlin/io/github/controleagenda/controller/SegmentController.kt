@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
-import java.util.*
 
 @RestController
 @RequestMapping("/segmentos")
@@ -22,9 +21,9 @@ class SegmentController {
         segmentService.getAllSegments()
 
     @GetMapping("/{id}")
-    fun getSegmentById(@PathVariable id: Long): ResponseEntity<Optional<Segment?>> {
-        val segmentFinded: Optional<Segment?> = segmentService.getSegmentById(id)
-        return if (!segmentFinded.isEmpty)
+    fun getSegmentById(@PathVariable id: Long): ResponseEntity<SegmentToReturn> {
+        val segmentFinded: SegmentToReturn = segmentService.getSegmentById(id)
+        return if (!segmentFinded.segment.segment?.isEmpty()!!)
             ResponseEntity.ok(segmentFinded)
         else ResponseEntity.notFound().build()
     }
@@ -37,7 +36,7 @@ class SegmentController {
         val idSequence = segmentService.getAllSegments().count().toLong() + 1
         val uri = uriBuilder.path("/${idSequence}/").build().toUri()
         return ResponseEntity.created(uri).body(
-            segmentService.addSegment(
+            segmentService.createSegment(
                 idSequence, segment
             )
         )
@@ -48,7 +47,8 @@ class SegmentController {
         @PathVariable id: Long,
         @RequestBody segment: Segment
     ): ResponseEntity<SegmentToReturn> {
-        return ResponseEntity.ok(segmentService.updateSegment(id, segment))
+        val segmentToEdit = Segment(id, segment.segment)
+        return ResponseEntity.ok(segmentService.updateSegment(segmentToEdit))
     }
 
     @DeleteMapping("/{id}")
