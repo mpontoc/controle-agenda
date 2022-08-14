@@ -12,6 +12,6 @@ data class SubSegment @JvmOverloads constructor(
     val message: String? = "",
 
     @OneToOne
-    val segment: Segment = Segment(-1, "")
+    val segment: Segment = Segment(1, "")
 
 )

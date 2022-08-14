@@ -61,23 +61,22 @@ class SegmentServiceImpl : SegmentService {
         return segmentos
     }
 
-    override fun createSegment(id: Long, segment: Segment): SegmentToReturn {
+    override fun createSegment(segment: Segment): SegmentToReturn {
 
         val allSegments = segmentRepository.findAll().count()
         var idSequenceOK = false
         var idSequence: Long = 5
-        val idSubSeg = util.idSequentSubSegment(subSegmentRepository)
 
-        if (allSegments < id && !segmentRepository.findById(id).isPresent) {
+        if (segment.id != null && allSegments < segment.id!! && !segmentRepository.findById(segment.id).isPresent) {
             return SegmentToReturn(
-                this.segmentRepository.save(Segment(id, segment.segment)),
+                this.segmentRepository.save(Segment(segment.id, segment.segment)),
                 mutableListOf(
                     subSegmentRepository.save(
                         SubSegment(
                             util.idSequentSubSegment(subSegmentRepository),
                             util.subSegmentDefault.subSegment,
                             util.subSegmentDefault.message,
-                            Segment(id, segment.segment)
+                            Segment(segment.id, segment.segment)
                         )
                     )
                 )
@@ -102,6 +101,7 @@ class SegmentServiceImpl : SegmentService {
                         util.idSequentSubSegment(subSegmentRepository),
                         util.subSegmentDefault.subSegment,
                         util.subSegmentDefault.message,
+                        Segment(idSequence, segment.segment)
                     )
                 )
             )

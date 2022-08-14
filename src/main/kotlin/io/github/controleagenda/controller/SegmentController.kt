@@ -33,13 +33,13 @@ class SegmentController {
         @RequestBody segment: Segment,
         uriBuilder: UriComponentsBuilder
     ): ResponseEntity<SegmentToReturn> {
-        val idSequence = segmentService.getAllSegments().count().toLong() + 1
-        val uri = uriBuilder.path("/${idSequence}/").build().toUri()
-        return ResponseEntity.created(uri).body(
+        val response =
             segmentService.createSegment(
-                idSequence, segment
+                segment
             )
-        )
+        val idSequence = response.segment!!.id
+        val uri = uriBuilder.path("segmentos/${idSequence}/").build().toUri()
+        return ResponseEntity.created(uri).body(response)
     }
 
     @PutMapping("/{id}")

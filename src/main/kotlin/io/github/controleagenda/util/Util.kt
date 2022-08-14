@@ -101,6 +101,17 @@ open class Util() {
     }
 
     fun idSequentSubSegment(subSegmentRepository: SubSegmentRepository): Long {
-        return (subSegmentRepository.findAll().count() + 1).toLong()
+
+        var idSequenceOK = false
+        var idSequence = subSegmentRepository.findAll().count() + 1
+
+        while (!idSequenceOK) {
+            if (subSegmentRepository.findById(idSequence.toLong()).isPresent) {
+                idSequence++
+            } else {
+                idSequenceOK = true
+            }
+        }
+        return idSequence.toLong()
     }
 }
