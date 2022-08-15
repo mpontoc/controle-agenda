@@ -6,7 +6,6 @@ import javax.persistence.*
 data class SubSegment @JvmOverloads constructor(
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
     val subSegment: String? = "",
     val message: String? = "",

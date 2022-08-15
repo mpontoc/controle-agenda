@@ -6,6 +6,7 @@ import io.github.controleagenda.model.SubSegment
 import io.github.controleagenda.repository.SegmentRepository
 import io.github.controleagenda.repository.SubSegmentRepository
 import io.github.controleagenda.services.SubSegmentService
+import io.github.controleagenda.util.Util
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -18,13 +19,15 @@ class SubSegmentServiceImpl : SubSegmentService {
     @Autowired
     lateinit var subSegmentRepository: SubSegmentRepository
 
+    val util = Util()
+
     override fun addSubSegment(id: Long, subSegment: SubSegment): SegmentToReturn {
 
         val segment: Segment = segmentRepository.getById(id)
 
         subSegmentRepository.save(
             SubSegment(
-                subSegment.id, subSegment.subSegment, subSegment.message,
+                util.idSequenceSubSegment(subSegmentRepository), subSegment.subSegment, subSegment.message,
                 Segment(segment.id, segment.segment)
             )
         )

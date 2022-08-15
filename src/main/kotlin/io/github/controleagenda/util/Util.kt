@@ -19,7 +19,7 @@ open class Util() {
 
         subSegmentRepository.save(
             SubSegment(
-                idSequentSubSegment(subSegmentRepository),
+                idSequenceSubSegment(subSegmentRepository),
                 subSegmentDefault.subSegment,
                 subSegmentDefault.message,
                 Segment(1, "Academia")
@@ -34,7 +34,7 @@ open class Util() {
 
         subSegmentRepository.save(
             SubSegment(
-                idSequentSubSegment(subSegmentRepository),
+                idSequenceSubSegment(subSegmentRepository),
                 subSegmentDefault.subSegment,
                 subSegmentDefault.message,
                 Segment(2, "Alimentação")
@@ -49,7 +49,7 @@ open class Util() {
 
         subSegmentRepository.save(
             SubSegment(
-                idSequentSubSegment(subSegmentRepository),
+                idSequenceSubSegment(subSegmentRepository),
                 subSegmentDefault.subSegment,
                 subSegmentDefault.message,
                 Segment(3, "Educação")
@@ -64,7 +64,7 @@ open class Util() {
 
         subSegmentRepository.save(
             SubSegment(
-                idSequentSubSegment(subSegmentRepository),
+                idSequenceSubSegment(subSegmentRepository),
                 subSegmentDefault.subSegment,
                 subSegmentDefault.message,
                 Segment(4, "Esporte")
@@ -78,7 +78,7 @@ open class Util() {
 
         subSegmentRepository.save(
             SubSegment(
-                idSequentSubSegment(subSegmentRepository),
+                idSequenceSubSegment(subSegmentRepository),
                 subSegmentDefault.subSegment,
                 subSegmentDefault.message,
                 Segment(5, "Familiar")
@@ -92,7 +92,7 @@ open class Util() {
 
         subSegmentRepository.save(
             SubSegment(
-                idSequentSubSegment(subSegmentRepository),
+                idSequenceSubSegment(subSegmentRepository),
                 subSegmentDefault.subSegment,
                 subSegmentDefault.message,
                 Segment(6, "Saúde")
@@ -100,10 +100,25 @@ open class Util() {
         )
     }
 
-    fun idSequentSubSegment(subSegmentRepository: SubSegmentRepository): Long {
+    fun idSequenceSegment(segmentRepository: SegmentRepository): Long {
 
         var idSequenceOK = false
-        var idSequence = subSegmentRepository.findAll().count() + 1
+        var idSequence = 5
+
+        while (!idSequenceOK) {
+            if (segmentRepository.findById(idSequence.toLong()).isPresent) {
+                idSequence++
+            } else {
+                idSequenceOK = true
+            }
+        }
+        return idSequence.toLong()
+    }
+
+    fun idSequenceSubSegment(subSegmentRepository: SubSegmentRepository): Long {
+
+        var idSequenceOK = false
+        var idSequence = 5
 
         while (!idSequenceOK) {
             if (subSegmentRepository.findById(idSequence.toLong()).isPresent) {

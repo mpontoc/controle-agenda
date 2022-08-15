@@ -64,33 +64,13 @@ class SegmentServiceImpl : SegmentService {
     override fun createSegment(segment: Segment): SegmentToReturn {
 
         val allSegments = segmentRepository.findAll().count()
-        var idSequenceOK = false
         var idSequence: Long = 5
 
         if (segment.id != null && allSegments < segment.id!! && !segmentRepository.findById(segment.id).isPresent) {
-            return SegmentToReturn(
-                this.segmentRepository.save(Segment(segment.id, segment.segment)),
-                mutableListOf(
-                    subSegmentRepository.save(
-                        SubSegment(
-                            util.idSequentSubSegment(subSegmentRepository),
-                            util.subSegmentDefault.subSegment,
-                            util.subSegmentDefault.message,
-                            Segment(segment.id, segment.segment)
-                        )
-                    )
-                )
-            )
+            idSequence = segment.id
         } else {
-            while (!idSequenceOK) {
-                if (segmentRepository.findById(idSequence).isPresent) {
-                    idSequence++
-                } else {
-                    idSequenceOK = true
-                }
-            }
+            idSequence = util.idSequenceSegment(segmentRepository)
         }
-
         return SegmentToReturn(
             segmentRepository.save(
                 Segment(idSequence, segment.segment)
@@ -98,7 +78,7 @@ class SegmentServiceImpl : SegmentService {
             mutableListOf(
                 subSegmentRepository.save(
                     SubSegment(
-                        util.idSequentSubSegment(subSegmentRepository),
+                        util.idSequenceSubSegment(subSegmentRepository),
                         util.subSegmentDefault.subSegment,
                         util.subSegmentDefault.message,
                         Segment(idSequence, segment.segment)
