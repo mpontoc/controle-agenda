@@ -26,7 +26,7 @@ class SegmentServiceImpl : SegmentService {
         val segment = segmentRepository.findSegmentById(id)
 
         return SegmentToReturn(
-            Segment(segment.id, segment.segment),
+            Segment(segment.id, segment.segmentName),
             subSegmentRepository.findSubSegmentToSegmentID(id)
         )
     }
@@ -51,7 +51,7 @@ class SegmentServiceImpl : SegmentService {
 
             segmentos.add(
                 SegmentToReturn(
-                    Segment(segment.id, segment.segment.toString()),
+                    Segment(segment.id, segment.segmentName.toString()),
                     subSegmentToSegment.toMutableList()
                 )
             )
@@ -73,15 +73,15 @@ class SegmentServiceImpl : SegmentService {
         }
         return SegmentToReturn(
             segmentRepository.save(
-                Segment(idSequence, segment.segment)
+                Segment(idSequence, segment.segmentName)
             ),
             mutableListOf(
                 subSegmentRepository.save(
                     SubSegment(
                         util.idSequenceSubSegment(subSegmentRepository),
-                        util.subSegmentDefault.subSegment,
+                        util.subSegmentDefault.subSegmentName,
                         util.subSegmentDefault.message,
-                        Segment(idSequence, segment.segment)
+                        Segment(idSequence, segment.segmentName)
                     )
                 )
             )
@@ -90,7 +90,7 @@ class SegmentServiceImpl : SegmentService {
 
     override fun updateSegment(segment: Segment): SegmentToReturn {
 
-        val segmentEdited = segmentRepository.save(Segment(segment.id, segment.segment))
+        val segmentEdited = segmentRepository.save(Segment(segment.id, segment.segmentName))
 
         return SegmentToReturn(
             segmentEdited,
@@ -110,7 +110,7 @@ class SegmentServiceImpl : SegmentService {
             }
             val segment = segmentRepository.findById(id)
             segmentRepository.deleteById(id)
-            println("O usuario ${segment.get().segment} foi deletado com sucesso")
+            println("O usuario ${segment.get().segmentName} foi deletado com sucesso")
         }
     }
 

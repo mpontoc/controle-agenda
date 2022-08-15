@@ -7,7 +7,7 @@ data class SubSegment @JvmOverloads constructor(
 
     @Id
     val id: Long? = null,
-    val subSegment: String? = "",
+    val subSegmentName: String? = "",
     val message: String? = "",
 
     @OneToOne

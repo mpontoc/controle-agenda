@@ -23,7 +23,7 @@ class SegmentServiceTest {
 
         val segments = segmentService.getAllSegments()
 
-        if (segments.toString().contains(util.listSegmentsDefault()[1].segment))
+        if (segments.toString().contains(util.listSegmentsDefault()[1].segmentName))
             Assertions.assertTrue(true)
         else
             Assertions.assertTrue(false)
@@ -33,7 +33,7 @@ class SegmentServiceTest {
     fun getSegmentByIdService() {
         val segment = segmentService.getSegmentById(2)
 
-        if (segment.toString().contains(util.listSegmentsDefault()[1].segment))
+        if (segment.toString().contains(util.listSegmentsDefault()[1].segmentName))
             Assertions.assertTrue(true)
         else
             Assertions.assertTrue(false)

@@ -20,7 +20,7 @@ open class Util() {
         subSegmentRepository.save(
             SubSegment(
                 idSequenceSubSegment(subSegmentRepository),
-                subSegmentDefault.subSegment,
+                subSegmentDefault.subSegmentName,
                 subSegmentDefault.message,
                 Segment(1, "Academia")
             )
@@ -35,7 +35,7 @@ open class Util() {
         subSegmentRepository.save(
             SubSegment(
                 idSequenceSubSegment(subSegmentRepository),
-                subSegmentDefault.subSegment,
+                subSegmentDefault.subSegmentName,
                 subSegmentDefault.message,
                 Segment(2, "Alimentação")
             )
@@ -50,7 +50,7 @@ open class Util() {
         subSegmentRepository.save(
             SubSegment(
                 idSequenceSubSegment(subSegmentRepository),
-                subSegmentDefault.subSegment,
+                subSegmentDefault.subSegmentName,
                 subSegmentDefault.message,
                 Segment(3, "Educação")
             )
@@ -65,7 +65,7 @@ open class Util() {
         subSegmentRepository.save(
             SubSegment(
                 idSequenceSubSegment(subSegmentRepository),
-                subSegmentDefault.subSegment,
+                subSegmentDefault.subSegmentName,
                 subSegmentDefault.message,
                 Segment(4, "Esporte")
             )
@@ -79,7 +79,7 @@ open class Util() {
         subSegmentRepository.save(
             SubSegment(
                 idSequenceSubSegment(subSegmentRepository),
-                subSegmentDefault.subSegment,
+                subSegmentDefault.subSegmentName,
                 subSegmentDefault.message,
                 Segment(5, "Familiar")
             )
@@ -93,7 +93,7 @@ open class Util() {
         subSegmentRepository.save(
             SubSegment(
                 idSequenceSubSegment(subSegmentRepository),
-                subSegmentDefault.subSegment,
+                subSegmentDefault.subSegmentName,
                 subSegmentDefault.message,
                 Segment(6, "Saúde")
             )

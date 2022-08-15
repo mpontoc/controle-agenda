@@ -27,8 +27,8 @@ class SubSegmentServiceImpl : SubSegmentService {
 
         subSegmentRepository.save(
             SubSegment(
-                util.idSequenceSubSegment(subSegmentRepository), subSegment.subSegment, subSegment.message,
-                Segment(segment.id, segment.segment)
+                util.idSequenceSubSegment(subSegmentRepository), subSegment.subSegmentName, subSegment.message,
+                Segment(segment.id, segment.segmentName)
             )
         )
 
@@ -43,7 +43,7 @@ class SubSegmentServiceImpl : SubSegmentService {
 
         return SegmentToReturn(
             Segment(
-                segment.id, segment.segment
+                segment.id, segment.segmentName
             ),
             subSegmentToSegment.toMutableList()
         )

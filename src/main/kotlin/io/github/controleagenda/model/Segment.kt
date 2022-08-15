@@ -8,7 +8,7 @@ data class Segment(
 
     @Id
     val id: Long? = null,
-    val segment: String? = ""
+    val segmentName: String? = ""
 
 )
 

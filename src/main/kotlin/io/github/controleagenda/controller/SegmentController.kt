@@ -23,7 +23,7 @@ class SegmentController {
     @GetMapping("/{id}")
     fun getSegmentById(@PathVariable id: Long): ResponseEntity<SegmentToReturn> {
         val segmentFinded: SegmentToReturn = segmentService.getSegmentById(id)
-        return if (!segmentFinded.segment.segment?.isEmpty()!!)
+        return if (!segmentFinded.segment.segmentName?.isEmpty()!!)
             ResponseEntity.ok(segmentFinded)
         else ResponseEntity.notFound().build()
     }
@@ -32,14 +32,33 @@ class SegmentController {
     fun createSegment(
         @RequestBody segment: Segment,
         uriBuilder: UriComponentsBuilder
-    ): ResponseEntity<SegmentToReturn> {
-        val response =
-            segmentService.createSegment(
-                segment
+    ): ResponseEntity<*> {
+        return if (!segment.segmentName!!.isEmpty() && segment.segmentName!!.length <= 20 && segmentService.getAllSegments()
+                .count() < 10
+        ) {
+            val response =
+                segmentService.createSegment(
+                    segment
+                )
+            val idSequence = response.segment!!.id
+            val uri = uriBuilder.path("segmentos/${idSequence}/").build().toUri()
+            ResponseEntity.created(uri).body(response)
+        } else if (segment.segmentName!!.isEmpty()) {
+            ResponseEntity.badRequest().body(
+                mapOf(
+                    "statusCode" to "400",
+                    "message" to "campo 'segmentName' nao permitido quando valor no envio estiver vazio",
+                )
             )
-        val idSequence = response.segment!!.id
-        val uri = uriBuilder.path("segmentos/${idSequence}/").build().toUri()
-        return ResponseEntity.created(uri).body(response)
+        } else
+            ResponseEntity.badRequest().body(
+                mapOf(
+                    "statusCode" to "400",
+                    "message" to "Excedeu max de Segmentos/Caracteres",
+                    "maxSegmentoLista" to "10",
+                    "maxCaracteresNomeSegmento" to "20"
+                )
+            )
     }
 
     @PutMapping("/{id}")
@@ -47,7 +66,7 @@ class SegmentController {
         @PathVariable id: Long,
         @RequestBody segment: Segment
     ): ResponseEntity<SegmentToReturn> {
-        val segmentToEdit = Segment(id, segment.segment)
+        val segmentToEdit = Segment(id, segment.segmentName)
         return ResponseEntity.ok(segmentService.updateSegment(segmentToEdit))
     }
 

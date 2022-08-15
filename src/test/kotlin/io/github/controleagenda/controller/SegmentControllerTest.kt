@@ -37,7 +37,7 @@ class SegmentControllerTest {
                 .all().extract().response()
 
         Assertions.assertEquals(
-            util.listSegmentsDefault()[3].segment,
+            util.listSegmentsDefault()[3].segmentName,
             response.body.jsonPath().getJsonObject<JSONObject>("segment[3]")
         )
     }
@@ -56,7 +56,7 @@ class SegmentControllerTest {
                 .all().extract().response()
 
         Assertions.assertEquals(
-            util.listSegmentsDefault()[1].segment,
+            util.listSegmentsDefault()[1].segmentName,
             response.body.jsonPath().getJsonObject<JSONObject>("segment")
         )
     }
