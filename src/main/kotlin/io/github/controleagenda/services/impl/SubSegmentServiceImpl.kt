@@ -50,11 +50,18 @@ class SubSegmentServiceImpl : SubSegmentService {
 
     }
 
-    override fun updateSubSegment(id: Long, subSegment: SubSegment): SegmentToReturn {
-        TODO("Not yet implemented")
+    override fun updateSubSegment(subSegment: SubSegment): SubSegment {
+
+        val subSegmentBase = subSegmentRepository.findSubSegmentById(subSegment.id!!)
+        return subSegmentRepository.save(
+            SubSegment(
+                subSegment.id, subSegment.subSegmentName, subSegment.message,
+                Segment(subSegmentBase!!.segment.id, subSegmentBase.subSegmentName)
+            )
+        )
     }
 
-    override fun deleteSubSegment(id: Long, idSubSegment: Long) {
-        TODO("Not yet implemented")
+    override fun deleteSubSegment(id: Long) {
+        subSegmentRepository.deleteById(id)
     }
 }

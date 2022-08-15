@@ -6,7 +6,7 @@ import javax.persistence.*
 data class SubSegment @JvmOverloads constructor(
 
     @Id
-    val id: Long? = null,
+    var id: Long? = null,
     val subSegmentName: String? = "",
     val message: String? = "",
 

@@ -1,15 +1,17 @@
 package io.github.controleagenda.controller
 
 import io.github.controleagenda.model.Segment
+import io.github.controleagenda.model.SegmentToReturn
 import io.github.controleagenda.model.SubSegment
 import io.github.controleagenda.services.SubSegmentService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
 
 @RestController
-@RequestMapping("/segmentos")
+@RequestMapping("/segmentos/sub-segmentos")
 class SubSegmentController {
 
     @Autowired
@@ -30,19 +32,23 @@ class SubSegmentController {
         )
     }
 
-//    @PutMapping("/{id}")
-//    fun editSegment(
-//        @PathVariable id: Long,
-//        @RequestBody segment: Segment, subSegment: SubSegment
-//    ): ResponseEntity<Segment> {
-//        return ResponseEntity.ok(segmentService.updateSegment(id, segment, subSegment))
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    fun deleteSegment(@PathVariable id: Long) {
-//        segmentService.deleteSegment(id)
-//    }
+    @PutMapping("/{id}")
+    fun editSubSegment(
+        @PathVariable id: Long,
+        @RequestBody subSegment: SubSegment
+    ): ResponseEntity<SubSegment> {
+        var subSegmentToEdit =
+            SubSegment(
+                id, subSegment.subSegmentName, subSegment.message
+            )
+        return ResponseEntity.ok(subSegmentService.updateSubSegment(subSegmentToEdit))
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteSubSegment(@PathVariable id: Long) {
+        subSegmentService.deleteSubSegment(id)
+    }
 }
 
 
