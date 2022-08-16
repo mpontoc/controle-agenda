@@ -33,17 +33,17 @@ class SegmentController {
         @RequestBody segment: Segment,
         uriBuilder: UriComponentsBuilder
     ): ResponseEntity<*> {
-        return if (!segment.segmentName!!.isEmpty() && segment.segmentName!!.length <= 20 && segmentService.getAllSegments()
+        return if (segment.segmentName!!.isNotEmpty() && segment.segmentName.length <= 20 && segmentService.getAllSegments()
                 .count() < 10
         ) {
             val response =
                 segmentService.createSegment(
                     segment
                 )
-            val idSequence = response.segment!!.id
+            val idSequence = response.segment.id
             val uri = uriBuilder.path("segmentos/${idSequence}/").build().toUri()
             ResponseEntity.created(uri).body(response)
-        } else if (segment.segmentName!!.isEmpty()) {
+        } else if (segment.segmentName.isEmpty()) {
             ResponseEntity.badRequest().body(
                 mapOf(
                     "statusCode" to "400",
