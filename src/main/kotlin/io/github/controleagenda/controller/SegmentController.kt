@@ -80,8 +80,18 @@ class SegmentController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteSegment(@PathVariable id: Long) {
-        segmentService.deleteSegment(id)
+    fun deleteSegment(@PathVariable id: Long): ResponseEntity<Void> {
+
+        var segmentFinded: SegmentToReturn
+        try {
+            segmentFinded = segmentService.getSegmentById(id)
+        } catch (e: Exception) {
+            segmentFinded = SegmentToReturn()
+        }
+        return if (segmentFinded.segment.segmentName!!.isNotEmpty()) {
+            segmentService.deleteSegment(id)
+            ResponseEntity.noContent().build()
+        } else ResponseEntity.notFound().build()
     }
 }
 
