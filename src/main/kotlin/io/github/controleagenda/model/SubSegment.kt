@@ -1,6 +1,8 @@
 package io.github.controleagenda.model
 
-import javax.persistence.*
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.OneToOne
 
 @Entity
 data class SubSegment @JvmOverloads constructor(

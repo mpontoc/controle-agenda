@@ -1,7 +1,5 @@
 package io.github.controleagenda.controller
 
-import io.github.controleagenda.model.Segment
-import io.github.controleagenda.model.SegmentToReturn
 import io.github.controleagenda.model.SubSegment
 import io.github.controleagenda.repository.SubSegmentRepository
 import io.github.controleagenda.services.SubSegmentService

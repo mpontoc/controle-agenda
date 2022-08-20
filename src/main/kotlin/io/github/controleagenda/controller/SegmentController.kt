@@ -16,19 +16,27 @@ class SegmentController {
     @Autowired
     lateinit var segmentService: SegmentService
 
-    @GetMapping()
+    @GetMapping
     fun getAllSegments() =
         segmentService.getAllSegments()
 
     @GetMapping("/{id}")
     fun getSegmentById(@PathVariable id: Long): ResponseEntity<SegmentToReturn> {
-        val segmentFinded: SegmentToReturn = segmentService.getSegmentById(id)
+
+        var segmentFinded: SegmentToReturn
+
+        try {
+            segmentFinded = segmentService.getSegmentById(id)
+        } catch (e: Exception) {
+            segmentFinded = SegmentToReturn()
+        }
+
         return if (!segmentFinded.segment.segmentName?.isEmpty()!!)
             ResponseEntity.ok(segmentFinded)
         else ResponseEntity.notFound().build()
     }
 
-    @PostMapping()
+    @PostMapping
     fun createSegment(
         @RequestBody segment: Segment,
         uriBuilder: UriComponentsBuilder

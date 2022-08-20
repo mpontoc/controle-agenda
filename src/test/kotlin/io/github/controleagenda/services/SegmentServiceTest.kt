@@ -2,6 +2,7 @@ package io.github.controleagenda.services
 
 import io.github.controleagenda.commons.Utils
 import io.github.controleagenda.model.Segment
+import io.github.controleagenda.model.SegmentToReturn
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -13,7 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest
 class SegmentServiceTest {
 
     @Autowired
-    lateinit var segmentService: SubSegmentService
+    lateinit var segmentService: SegmentService
 
     @Mock
     lateinit var util: Utils
@@ -23,7 +24,7 @@ class SegmentServiceTest {
 
         val segments = segmentService.getAllSegments()
 
-        if (segments.toString().contains(util.listSegmentsDefault()[1].segmentName))
+        if (segments.toString().contains(util.listSegmentsDefault()[1].segmentName!!))
             Assertions.assertTrue(true)
         else
             Assertions.assertTrue(false)
@@ -33,7 +34,7 @@ class SegmentServiceTest {
     fun getSegmentByIdService() {
         val segment = segmentService.getSegmentById(2)
 
-        if (segment.toString().contains(util.listSegmentsDefault()[1].segmentName))
+        if (segment.toString().contains(util.listSegmentsDefault()[1].segmentName!!))
             Assertions.assertTrue(true)
         else
             Assertions.assertTrue(false)
@@ -41,9 +42,16 @@ class SegmentServiceTest {
 
     @Test
     fun getSegmentByInvalidIdService() {
-        val segment = segmentService.getSegmentById(99)
+        var segment: SegmentToReturn
 
-        if (segment.isEmpty)
+        try {
+            segment =  segmentService.getSegmentById(99)
+        } catch (e: Exception) {
+            segment = SegmentToReturn()
+            println("Segment not founded")
+        }
+
+        if (segment.segment.segmentName == "")
             Assertions.assertTrue(true)
         else
             Assertions.assertTrue(false)
@@ -69,7 +77,7 @@ class SegmentServiceTest {
     @Test
     fun editSegmentService() {
         util.createSegment(segmentService, 110, "segmentToEdit")
-        segmentService.updateSegments(110, Segment(110, "segmentEdited"))
+        segmentService.updateSegment(Segment(110, "segmentEdited"))
         segmentService.deleteSegment(110)
     }
 

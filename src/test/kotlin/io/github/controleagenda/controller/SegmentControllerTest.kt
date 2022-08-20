@@ -1,7 +1,7 @@
 package io.github.controleagenda.controller
 
 import io.github.controleagenda.commons.Utils
-import io.github.controleagenda.services.SubSegmentService
+import io.github.controleagenda.services.SegmentService
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import io.restassured.response.Response
@@ -20,7 +20,7 @@ class SegmentControllerTest {
     lateinit var util: Utils
 
     @Autowired
-    lateinit var segmentService: SubSegmentService
+    lateinit var segmentService: SegmentService
 
     @Test
     fun testGetAllSegmentsByController() {
@@ -38,7 +38,7 @@ class SegmentControllerTest {
 
         Assertions.assertEquals(
             util.listSegmentsDefault()[3].segmentName,
-            response.body.jsonPath().getJsonObject<JSONObject>("segment[3]")
+            response.body.jsonPath().getJsonObject<JSONObject>("segment[3].segmentName")
         )
     }
 
@@ -57,7 +57,7 @@ class SegmentControllerTest {
 
         Assertions.assertEquals(
             util.listSegmentsDefault()[1].segmentName,
-            response.body.jsonPath().getJsonObject<JSONObject>("segment")
+            response.body.jsonPath().getJsonObject<JSONObject>("segment.segmentName")
         )
     }
 
@@ -80,7 +80,7 @@ class SegmentControllerTest {
 
         val body = mapOf(
             "id" to "98",
-            "segment" to "test-rest-assured"
+            "segmentName" to "test-rest-assured"
         )
         val response: Response =
             RestAssured
@@ -96,10 +96,10 @@ class SegmentControllerTest {
 
         Assertions.assertEquals(
             "test-rest-assured",
-            response.body.jsonPath().getJsonObject<JSONObject>("segment")
+            response.body.jsonPath().getJsonObject<JSONObject>("segment.segmentName")
         )
 
-        var idToRemove: String = JSONValue.toJSONString(response.body.jsonPath().getJsonObject<JSONObject>("id"))
+        var idToRemove: String = JSONValue.toJSONString(response.body.jsonPath().getJsonObject<JSONObject>("segment.id"))
         segmentService.deleteSegment(idToRemove.toLong())
     }
 
@@ -127,7 +127,7 @@ class SegmentControllerTest {
             .contentType("application/json")
             .`when`()
             .body(
-                "{\"segment\": \"segmentEdited\"}"
+                "{\"segmentName\": \"segmentEdited\"}"
             )
             .put("/segmentos/110")
             .then()
