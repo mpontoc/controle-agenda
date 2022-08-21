@@ -38,7 +38,7 @@ class SegmentControllerTest {
 
         Assertions.assertEquals(
             util.listSegmentsDefault()[3].segmentName,
-            response.body.jsonPath().getJsonObject<JSONObject>("segment[3].segmentName")
+            response.body.jsonPath().getJsonObject<JSONObject>("segment[3].segment_name")
         )
     }
 
@@ -57,7 +57,7 @@ class SegmentControllerTest {
 
         Assertions.assertEquals(
             util.listSegmentsDefault()[1].segmentName,
-            response.body.jsonPath().getJsonObject<JSONObject>("segment.segmentName")
+            response.body.jsonPath().getJsonObject<JSONObject>("segment.segment_name")
         )
     }
 
@@ -80,7 +80,7 @@ class SegmentControllerTest {
 
         val body = mapOf(
             "id" to "98",
-            "segmentName" to "test-rest-assured"
+            "segment_name" to "test-rest-assured"
         )
         val response: Response =
             RestAssured
@@ -96,7 +96,7 @@ class SegmentControllerTest {
 
         Assertions.assertEquals(
             "test-rest-assured",
-            response.body.jsonPath().getJsonObject<JSONObject>("segment.segmentName")
+            response.body.jsonPath().getJsonObject<JSONObject>("segment.segment_name")
         )
 
         var idToRemove: String = JSONValue.toJSONString(response.body.jsonPath().getJsonObject<JSONObject>("segment.id"))
@@ -127,7 +127,7 @@ class SegmentControllerTest {
             .contentType("application/json")
             .`when`()
             .body(
-                "{\"segmentName\": \"segmentEdited\"}"
+                "{\"segment_name\": \"segmentEdited\"}"
             )
             .put("/segmentos/110")
             .then()
