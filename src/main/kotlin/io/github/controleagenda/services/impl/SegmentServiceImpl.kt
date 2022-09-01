@@ -1,5 +1,8 @@
 package io.github.controleagenda.services.impl
 
+import io.github.controleagenda.exception.BackendException
+import io.github.controleagenda.exception.ExceptionHandler
+import io.github.controleagenda.model.BackendError
 import io.github.controleagenda.model.Segment
 import io.github.controleagenda.model.SegmentToReturn
 import io.github.controleagenda.model.SubSegment
@@ -66,12 +69,14 @@ class SegmentServiceImpl : SegmentService {
         val allSegments = segmentRepository.findAll().count()
         var idSequence: Long = 5
 
+        return if (segmentRepository.findAll().count() < 10) {
+
         if (segment.id != null && allSegments < segment.id!! && !segmentRepository.findById(segment.id).isPresent) {
             idSequence = segment.id
         } else {
             idSequence = util.idSequenceSegment(segmentRepository)
         }
-        return SegmentToReturn(
+         SegmentToReturn(
             segmentRepository.save(
                 Segment(idSequence, segment.segmentName)
             ),
@@ -86,6 +91,12 @@ class SegmentServiceImpl : SegmentService {
                 )
             )
         )
+        }  else
+                throw BackendException(
+                    message = "Atingiu a quantidade máxima Segmentos -> qtd max = 10",
+                )
+
+
     }
 
     override fun updateSegment(segment: Segment): SegmentToReturn {
