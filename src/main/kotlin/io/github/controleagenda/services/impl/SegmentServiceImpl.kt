@@ -1,8 +1,6 @@
 package io.github.controleagenda.services.impl
 
 import io.github.controleagenda.exception.BackendException
-import io.github.controleagenda.exception.ExceptionHandler
-import io.github.controleagenda.model.BackendError
 import io.github.controleagenda.model.Segment
 import io.github.controleagenda.model.SegmentToReturn
 import io.github.controleagenda.model.SubSegment
@@ -13,6 +11,7 @@ import io.github.controleagenda.util.Util
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
+@Suppress("UNCHECKED_CAST")
 @Service
 class SegmentServiceImpl : SegmentService {
 
@@ -35,15 +34,15 @@ class SegmentServiceImpl : SegmentService {
     }
 
     override fun getAllSegments(): MutableList<SegmentToReturn> {
-        var allSegments = segmentRepository.findAll().count()
+        val allSegments = segmentRepository.findAll()
         var subSegmentToSegment: MutableList<SubSegment>
 
-        if (allSegments <= 1) {
+        if (allSegments.count() <= 1) {
             util.initSegments(segmentRepository, subSegmentRepository)
         }
 
-        val allSegmentList: MutableList<Segment> = segmentRepository.findAll()
-        var segmentos = mutableListOf<SegmentToReturn>()
+        val allSegmentList: MutableList<Segment> = allSegments
+        val segmentToReturn = mutableListOf<SegmentToReturn>()
         val subSegments = subSegmentRepository.findAll()
 
         for (segment in allSegmentList) {
@@ -52,7 +51,7 @@ class SegmentServiceImpl : SegmentService {
                     it!!.segment.id == (segment.id)
                 } as MutableList<SubSegment>
 
-            segmentos.add(
+            segmentToReturn.add(
                 SegmentToReturn(
                     Segment(segment.id, segment.segmentName.toString()),
                     subSegmentToSegment.toMutableList()
@@ -61,50 +60,48 @@ class SegmentServiceImpl : SegmentService {
             subSegmentToSegment.clear()
         }
 
-        return segmentos
+        return segmentToReturn
     }
 
     override fun createSegment(segment: Segment): SegmentToReturn {
 
         val allSegments = segmentRepository.findAll().count()
-        var idSequence: Long = 5
+        val idSequence: Long
 
-        return if (segmentRepository.findAll().count() < 10) {
+        if (allSegments < 10) {
 
-        if (segment.id != null && allSegments < segment.id!! && !segmentRepository.findById(segment.id).isPresent) {
-            idSequence = segment.id
-        } else {
-            idSequence = util.idSequenceSegment(segmentRepository)
-        }
-         SegmentToReturn(
-            segmentRepository.save(
-                Segment(idSequence, segment.segmentName)
-            ),
-            mutableListOf(
-                subSegmentRepository.save(
-                    SubSegment(
-                        util.idSequenceSubSegment(subSegmentRepository),
-                        util.subSegmentDefault.subSegmentName,
-                        util.subSegmentDefault.message,
-                        Segment(idSequence, segment.segmentName)
+            if (segment.id != null && allSegments < segment.id && !segmentRepository.findById(segment.id).isPresent) {
+                idSequence = segment.id
+            } else {
+                idSequence = util.idSequenceSegment(segmentRepository)
+            }
+            return SegmentToReturn(
+                segmentRepository.save(
+                    Segment(idSequence, segment.segmentName)
+                ),
+                mutableListOf(
+                    subSegmentRepository.save(
+                        SubSegment(
+                            util.idSequenceSubSegment(subSegmentRepository),
+                            util.subSegmentDefault.subSegmentName,
+                            util.subSegmentDefault.message,
+                            Segment(idSequence, segment.segmentName)
+                        )
                     )
                 )
             )
-        )
-        }  else
-                throw BackendException(
-                    message = "Atingiu a quantidade máxima Segmentos -> qtd max = 10",
-                )
-
-
+        } else
+            throw BackendException(
+                message = "Atingiu a quantidade máxima Segmentos -> qtd max = 10",
+            )
     }
 
     override fun updateSegment(segment: Segment): SegmentToReturn {
 
-        val segmentEdited = segmentRepository.save(Segment(segment.id, segment.segmentName))
+        val segmentToEdit = segmentRepository.save(Segment(segment.id, segment.segmentName))
 
         return SegmentToReturn(
-            segmentEdited,
+            segmentToEdit,
             subSegmentRepository.findSubSegmentToSegmentID(segment.id!!)
         )
     }
@@ -112,7 +109,7 @@ class SegmentServiceImpl : SegmentService {
     override fun deleteSegment(id: Long) {
 
         if (id in 1..6) {
-            throw RuntimeException("Não é possível apagar os valores default")
+            throw BackendException("Não é possível apagar os valores default")
         } else {
             val subSegmentBySegmentId = subSegmentRepository.findSubSegmentToSegmentID(id)
             subSegmentBySegmentId.forEach {

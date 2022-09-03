@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/segmentos/sub-segmentos")
@@ -22,37 +23,13 @@ class SubSegmentController {
     @PostMapping("/{id}")
     fun createSubSegment(
         @PathVariable id: Long,
-        @RequestBody subSegment: SubSegment,
+        @RequestBody @Valid subSegment: SubSegment,
         uriBuilder: UriComponentsBuilder
     ): ResponseEntity<*> {
-        return if (subSegment.subSegmentName!!.isNotEmpty() && subSegment.subSegmentName.length <= 20 && subSegmentRepository.findSubSegmentToSegmentID(
-                id
-            ).count() < 20
-        ) {
-            val response = subSegmentService.addSubSegment(
-                id,
-                subSegment
-            )
-            val uri = uriBuilder.path("segmentos/${id}/").build().toUri()
-            ResponseEntity.created(uri).body(
-                response
-            )
-        } else if (subSegment.subSegmentName.isEmpty()) {
-            ResponseEntity.badRequest().body(
-                mapOf(
-                    "statusCode" to "400",
-                    "message" to "campo 'subSegmentName' nao permitido quando valor no envio estiver vazio",
-                )
-            )
-        } else
-            ResponseEntity.badRequest().body(
-                mapOf(
-                    "statusCode" to "400",
-                    "message" to "Excedeu max de SubSegmentos/Caracteres",
-                    "maxSubSegmentoLista" to "20",
-                    "maxCaracteresNomeSegmento" to "20"
-                )
-            )
+        val response = subSegmentService.createSubSegment(id, subSegment)
+        val idSequence = response.segment.id
+        val uri = uriBuilder.path("segmentos/${idSequence}/").build().toUri()
+        return ResponseEntity.created(uri).body(response)
     }
 
     @PutMapping("/{id}")

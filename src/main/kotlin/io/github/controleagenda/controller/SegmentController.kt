@@ -42,13 +42,7 @@ class SegmentController {
         @RequestBody @Valid segment: Segment,
         uriBuilder: UriComponentsBuilder
     ): ResponseEntity<*> {
-
-//            segmentService.getAllSegments()
-//                .count() < 10
-        val response =
-            segmentService.createSegment(
-                segment
-            )
+        val response = segmentService.createSegment(segment)
         val idSequence = response.segment.id
         val uri = uriBuilder.path("segmentos/${idSequence}/").build().toUri()
         return ResponseEntity.created(uri).body(response)

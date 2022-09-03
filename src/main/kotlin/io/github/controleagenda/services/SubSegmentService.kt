@@ -5,7 +5,7 @@ import io.github.controleagenda.model.SubSegment
 
 interface SubSegmentService {
 
-    fun addSubSegment(idSegment: Long, subSegment: SubSegment): SegmentToReturn
+    fun createSubSegment(idSegment: Long, subSegment: SubSegment): SegmentToReturn
     fun updateSubSegment(subSegment: SubSegment): SubSegment
     fun deleteSubSegment(idSubSegment: Long)
 }

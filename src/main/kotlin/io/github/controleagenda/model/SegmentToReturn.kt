@@ -1,9 +1,7 @@
 package io.github.controleagenda.model
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonProperty
 
-@JsonAutoDetect
 data class SegmentToReturn(
 
     @JsonProperty("segment")
