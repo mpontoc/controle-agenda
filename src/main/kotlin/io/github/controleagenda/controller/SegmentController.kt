@@ -7,7 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import org.springframework.web.util.UriComponentsBuilder
+import java.net.URI
+import java.net.URL
+import java.net.http.HttpRequest
+import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
 @RestController
@@ -40,13 +45,13 @@ class SegmentController {
     @PostMapping
     fun createSegment(
         @RequestBody @Valid segment: Segment,
-        uriBuilder: UriComponentsBuilder
+        uriComponentsBuilder: UriComponentsBuilder,
+        request: HttpServletRequest
     ): ResponseEntity<*> {
         val response = segmentService.createSegment(segment)
         val idSequence = response.segment.id
-        val uri = uriBuilder.path("segmentos/${idSequence}/").build().toUri()
+        val uri = uriComponentsBuilder.path("segmentos/${idSequence}/").build().toUri()
         return ResponseEntity.created(uri).body(response)
-
     }
 
     @PutMapping("/{id}")
@@ -69,7 +74,7 @@ class SegmentController {
             segmentFinded = SegmentToReturn()
         }
         return if (segmentFinded.segment.segmentName!!.isNotEmpty()) {
-            segmentService.deleteSegment(id)
+            println(segmentService.deleteSegment(id))
             ResponseEntity.noContent().build()
         } else ResponseEntity.notFound().build()
     }

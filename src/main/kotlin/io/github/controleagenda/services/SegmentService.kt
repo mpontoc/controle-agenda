@@ -9,5 +9,5 @@ interface SegmentService {
     fun getSegmentById(id: Long): SegmentToReturn
     fun createSegment(segment: Segment): SegmentToReturn
     fun updateSegment(segment: Segment): SegmentToReturn
-    fun deleteSegment(id: Long)
+    fun deleteSegment(id: Long): String
 }

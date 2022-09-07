@@ -106,7 +106,7 @@ class SegmentServiceImpl : SegmentService {
         )
     }
 
-    override fun deleteSegment(id: Long) {
+    override fun deleteSegment(id: Long): String {
 
         if (id in 1..6) {
             throw BackendException("Não é possível apagar os valores default")
@@ -118,7 +118,7 @@ class SegmentServiceImpl : SegmentService {
             }
             val segment = segmentRepository.findById(id)
             segmentRepository.deleteById(id)
-            println("O usuario ${segment.get().segmentName} foi deletado com sucesso")
+            return ("O usuario ${segment.get().segmentName} foi deletado com sucesso")
         }
     }
 
