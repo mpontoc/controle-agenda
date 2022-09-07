@@ -126,42 +126,48 @@ class SegmentControllerTest {
 
     @Test
     fun deleteSegmentByController() {
-//        util.createSegment(segmentService, 98, "testUnitario")
 
         Mockito.`when`(segmentService.getSegmentById(1)).thenReturn(util.listSegmentsDefault()[0])
         Mockito.`when`(segmentService.deleteSegment(1)).thenReturn(
             "O usuario ${util.listSegmentsDefault()[0].segment.segmentName} foi deltado com sucesso"
         )
 
-        RestAssured
+        val response = RestAssured
             .given()
             .contentType("application/json")
             .`when`()
-            .delete("/segmentos/98")
+            .delete("/segmentos/1")
             .then()
-//            .statusCode(204)
+            .statusCode(204)
             .log()
             .all().extract().response()
+
+        println(response)
     }
 
     @Test
     fun editSegmentByController() {
-        util.createSegment(segmentService, 110, "segmentToEdit")
 
-        RestAssured
+        Mockito.`when`(segmentService.updateSegment(Segment(1, "segmentEdited")))
+            .thenReturn(util.editedSegment("segmentEdited"))
+
+        val response = RestAssured
             .given()
             .contentType("application/json")
             .`when`()
             .body(
                 "{\"segment_name\": \"segmentEdited\"}"
             )
-            .put("/segmentos/110")
+            .put("/segmentos/1")
             .then()
             .statusCode(200)
             .log()
             .all().extract().response()
 
-        segmentService.deleteSegment(110)
+        Assertions.assertEquals(
+            "segmentEdited",
+            response.body.jsonPath().getJsonObject<JSONObject>("segment.segment_name")
+        )
     }
 
 }

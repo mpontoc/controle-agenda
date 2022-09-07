@@ -36,9 +36,10 @@ open class Utils() {
         )
     }
 
-    fun listSegmentOnlyOne(): List<Segment> {
-        return listOf(
-            Segment(1, "Academia")
+    fun editedSegment(segmentName: String): SegmentToReturn {
+        return SegmentToReturn(
+            Segment(1, segmentName),
+            mutableListOf(SubSegment())
         )
     }
 
