@@ -7,11 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import org.springframework.web.util.UriComponentsBuilder
-import java.net.URI
-import java.net.URL
-import java.net.http.HttpRequest
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
@@ -28,18 +24,7 @@ class SegmentController {
 
     @GetMapping("/{id}")
     fun getSegmentById(@PathVariable id: Long): ResponseEntity<SegmentToReturn> {
-
-        var segmentFinded: SegmentToReturn
-
-        try {
-            segmentFinded = segmentService.getSegmentById(id)
-        } catch (e: Exception) {
-            segmentFinded = SegmentToReturn()
-        }
-
-        return if (!segmentFinded.segment.segmentName?.isEmpty()!!)
-            ResponseEntity.ok(segmentFinded)
-        else ResponseEntity.notFound().build()
+        return ResponseEntity.ok(segmentService.getSegmentById(id))
     }
 
     @PostMapping
@@ -66,17 +51,8 @@ class SegmentController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteSegment(@PathVariable id: Long): ResponseEntity<Void> {
-
-        var segmentFinded: SegmentToReturn
-        try {
-            segmentFinded = segmentService.getSegmentById(id)
-        } catch (e: Exception) {
-            segmentFinded = SegmentToReturn()
-        }
-        return if (segmentFinded.segment.segmentName!!.isNotEmpty()) {
-            println(segmentService.deleteSegment(id))
-            ResponseEntity.noContent().build()
-        } else ResponseEntity.notFound().build()
+        segmentService.deleteSegment(id)
+        return ResponseEntity.noContent().build()
     }
 }
 

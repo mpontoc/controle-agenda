@@ -1,20 +1,20 @@
 package io.github.controleagenda.exception
 
 import io.github.controleagenda.model.BackendError
-import org.springframework.data.crossstore.ChangeSetPersister
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.MethodArgumentNotValidException
-import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.bind.annotation.RestControllerAdvice
 import javax.servlet.http.HttpServletRequest
 
 @RestControllerAdvice
 class ExceptionHandler {
 
-    @ExceptionHandler(ChangeSetPersister.NotFoundException::class)
+    @ExceptionHandler(NotFoundException::class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     fun handleNotFound(
-        exception: ChangeSetPersister.NotFoundException,
+        exception: NotFoundException,
         request: HttpServletRequest
     ): BackendError {
         return BackendError(

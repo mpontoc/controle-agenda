@@ -1,6 +1,7 @@
 package io.github.controleagenda.controller
 
 import io.github.controleagenda.commons.Utils
+import io.github.controleagenda.exception.NotFoundException
 import io.github.controleagenda.model.Segment
 import io.github.controleagenda.model.SegmentToReturn
 import io.github.controleagenda.services.SegmentService
@@ -16,7 +17,6 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.dao.EmptyResultDataAccessException
 import javax.annotation.Resource
 
 
@@ -81,7 +81,7 @@ class SegmentControllerTest {
     @Test
     fun testGetSegmentsByIdControllerNotFound() {
 
-        Mockito.`when`(segmentService.getSegmentById(99)).thenThrow(EmptyResultDataAccessException::class.java)
+        Mockito.`when`(segmentService.getSegmentById(99)).thenThrow(NotFoundException::class.java)
 
         RestAssured
             .given()
@@ -127,7 +127,6 @@ class SegmentControllerTest {
     @Test
     fun deleteSegmentByController() {
 
-        Mockito.`when`(segmentService.getSegmentById(1)).thenReturn(util.listSegmentsDefault()[0])
         Mockito.`when`(segmentService.deleteSegment(1)).thenReturn(
             "O usuario ${util.listSegmentsDefault()[0].segment.segmentName} foi deltado com sucesso"
         )
@@ -149,7 +148,7 @@ class SegmentControllerTest {
     fun editSegmentByController() {
 
         Mockito.`when`(segmentService.updateSegment(Segment(1, "segmentEdited")))
-            .thenReturn(util.editedSegment("segmentEdited"))
+            .thenReturn(util.segmentToReturn("segmentEdited"))
 
         val response = RestAssured
             .given()

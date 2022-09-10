@@ -1,6 +1,7 @@
 package io.github.controleagenda.services.impl
 
 import io.github.controleagenda.exception.BackendException
+import io.github.controleagenda.exception.NotFoundException
 import io.github.controleagenda.model.Segment
 import io.github.controleagenda.model.SegmentToReturn
 import io.github.controleagenda.model.SubSegment
@@ -25,12 +26,16 @@ class SegmentServiceImpl : SegmentService {
 
     override fun getSegmentById(id: Long): SegmentToReturn {
 
-        val segment = segmentRepository.findSegmentById(id)
+        if (segmentRepository.findById(id).isPresent) {
+            val segment = segmentRepository.findSegmentById(id)
 
-        return SegmentToReturn(
-            Segment(segment.id, segment.segmentName),
-            subSegmentRepository.findSubSegmentToSegmentID(id)
-        )
+            return SegmentToReturn(
+                Segment(segment.id, segment.segmentName),
+                subSegmentRepository.findSubSegmentToSegmentID(id)
+            )
+        } else {
+            throw NotFoundException("Segmento com o id $id não existe no banco de dados")
+        }
     }
 
     override fun getAllSegments(): MutableList<SegmentToReturn> {
@@ -98,19 +103,24 @@ class SegmentServiceImpl : SegmentService {
 
     override fun updateSegment(segment: Segment): SegmentToReturn {
 
-        val segmentToEdit = segmentRepository.save(Segment(segment.id, segment.segmentName))
+        if (segmentRepository.findById(segment.id!!).isPresent) {
 
-        return SegmentToReturn(
-            segmentToEdit,
-            subSegmentRepository.findSubSegmentToSegmentID(segment.id!!)
-        )
+            val segmentToEdit = segmentRepository.save(Segment(segment.id, segment.segmentName))
+
+            return SegmentToReturn(
+                segmentToEdit,
+                subSegmentRepository.findSubSegmentToSegmentID(segment.id)
+            )
+        } else {
+            throw NotFoundException("Segmento com o id ${segment.id} não existe no banco de dados")
+        }
     }
 
     override fun deleteSegment(id: Long): String {
 
         if (id in 1..6) {
             throw BackendException("Não é possível apagar os valores default")
-        } else {
+        } else if (segmentRepository.findById(id).isPresent) {
             val subSegmentBySegmentId = subSegmentRepository.findSubSegmentToSegmentID(id)
             subSegmentBySegmentId.forEach {
                 it!!.id
@@ -119,6 +129,8 @@ class SegmentServiceImpl : SegmentService {
             val segment = segmentRepository.findById(id)
             segmentRepository.deleteById(id)
             return ("O usuario ${segment.get().segmentName} foi deletado com sucesso")
+        } else {
+            throw NotFoundException("Segmento com o id $id não existe no banco de dados")
         }
     }
 

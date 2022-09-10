@@ -36,7 +36,7 @@ open class Utils() {
         )
     }
 
-    fun editedSegment(segmentName: String): SegmentToReturn {
+    fun segmentToReturn(segmentName: String): SegmentToReturn {
         return SegmentToReturn(
             Segment(1, segmentName),
             mutableListOf(SubSegment())
