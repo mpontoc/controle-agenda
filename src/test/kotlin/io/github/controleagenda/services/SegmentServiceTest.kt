@@ -1,29 +1,28 @@
 package io.github.controleagenda.services
 
-import io.github.controleagenda.commons.Utils
+import io.github.controleagenda.commons.Util
 import io.github.controleagenda.exception.BackendException
+import io.github.controleagenda.exception.NotFoundException
 import io.github.controleagenda.model.Segment
-import io.github.controleagenda.model.SegmentToReturn
 import io.github.controleagenda.repository.SegmentRepository
 import io.github.controleagenda.repository.SubSegmentRepository
+import io.github.controleagenda.services.impl.SegmentServiceImpl
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.ArgumentMatchers.any
+import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.dao.EmptyResultDataAccessException
-import org.springframework.web.util.UriComponents
-import org.springframework.web.util.UriComponentsBuilder
+import java.util.*
 
 @ExtendWith(MockitoExtension::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class SegmentServiceTest {
 
-    @Mock
-    lateinit var segmentService: SegmentService
+    @InjectMocks
+    lateinit var segmentService: SegmentServiceImpl
 
     @Mock
     lateinit var segmentRepository: SegmentRepository
@@ -32,18 +31,12 @@ class SegmentServiceTest {
     lateinit var subSegmentRepository: SubSegmentRepository
 
     @Mock
-    lateinit var uriComponentsBuilder: UriComponentsBuilder
-
-    @Mock
-    lateinit var uriComponents: UriComponents
-
-    @Mock
-    lateinit var util: Utils
+    lateinit var util: Util
 
     @Test
     fun getAllSegmentsService() {
 
-        Mockito.`when`(segmentService.getAllSegments()).thenReturn(util.listSegmentsDefault())
+        Mockito.`when`(segmentRepository.findAll()).thenReturn(util.getAllSegmentsDefault())
         val segments = segmentService.getAllSegments()
         if (segments.toString().contains(util.listSegmentsDefault()[1].segment.segmentName!!))
             Assertions.assertTrue(true)
@@ -53,7 +46,11 @@ class SegmentServiceTest {
 
     @Test
     fun getSegmentByIdService() {
-        Mockito.`when`(segmentService.getSegmentById(2)).thenReturn(util.listSegmentsDefault()[1])
+        Mockito.`when`(segmentRepository.findById(2)).thenReturn(
+            Optional.of(util.listSegmentsDefault()[1].segment)
+        )
+        Mockito.`when`(segmentRepository.findSegmentById(2)).thenReturn(util.listSegmentsDefault()[1].segment)
+
         val segment = segmentService.getSegmentById(2)
         if (segment.toString().contains(util.listSegmentsDefault()[1].segment.segmentName!!))
             Assertions.assertTrue(true)
@@ -63,72 +60,78 @@ class SegmentServiceTest {
 
     @Test
     fun getSegmentByInvalidIdService() {
-        Mockito.`when`(segmentService.getSegmentById(99)).thenThrow(EmptyResultDataAccessException::class.java)
-        var segment: SegmentToReturn
-        try {
-            segment = segmentService.getSegmentById(99)
-        } catch (e: Exception) {
-            segment = SegmentToReturn()
-            println("Segment not founded")
-        }
-        if (segment.segment.segmentName == "")
-            Assertions.assertTrue(true)
-        else
-            Assertions.assertTrue(false)
+        val exception = assertThrows<NotFoundException> { segmentService.getSegmentById(99) }
+        val exceptionExpected = "Segmento com o id 99 não existe no banco de dados"
+        Assertions.assertEquals(exceptionExpected, exception.message)
     }
-
 
     @Test
     fun deleteSegmentService() {
-        Mockito.`when`(segmentService.deleteSegment(1)).thenReturn(
-            "O usuario ${util.listSegmentsDefault()[0].segment.segmentName} foi deltado com sucesso"
+        Mockito.`when`(segmentRepository.findById(10)).thenReturn(
+            Optional.of(Segment(10, "restTest"))
         )
-        segmentService.deleteSegment(1)
+        Mockito.`when`(subSegmentRepository.findSubSegmentToSegmentID(10)).thenReturn(
+            util.segmentToReturn("restTest").subSegment
+        )
+        segmentService.deleteSegment(10)
     }
 
     @Test
     fun deleteSegmentNoPermissionService() {
-
-        Mockito.`when`(segmentService.deleteSegment(3)).thenThrow(
-            BackendException("Não é possível apagar os valores default")
-        )
-
         val exception = assertThrows<BackendException> {
             segmentService.deleteSegment(3)
         }
         val exceptionExpected = "Não é possível apagar os valores default"
         Assertions.assertEquals(exceptionExpected, exception.message)
+    }
 
+    @Test
+    fun deleteSegmentNotFundedService() {
+        val exception = assertThrows<NotFoundException> {
+            segmentService.deleteSegment(11)
+        }
+        val exceptionExpected = "Segmento com o id 11 não existe no banco de dados"
+        Assertions.assertEquals(exceptionExpected, exception.message)
     }
 
     @Test
     fun editSegmentService() {
-
-        Mockito.`when`(segmentService.updateSegment(Segment(1, "segmentEdited")))
-            .thenReturn(util.segmentToReturn("segmentEdited"))
-
-        val segment = segmentService.updateSegment(Segment(1, "segmentEdited"))
-
+        Mockito.`when`(segmentRepository.findById(2)).thenReturn(
+            Optional.of(util.listSegmentsDefault()[1].segment)
+        )
+        Mockito.`when`(segmentRepository.save(any())).thenReturn(Segment(2, "segmentEdited"))
+        val segment = segmentService.updateSegment(Segment(2, "segmentEdited"))
         Assertions.assertTrue(segment.segment.segmentName == "segmentEdited")
+    }
 
+    @Test
+    fun editSegmentNotFoundedService() {
+        val exception = assertThrows<NotFoundException> {
+            segmentService.updateSegment(Segment(11, "segmentEdited"))
+        }
+        val exceptionExpected = "Segmento com o id 11 não existe no banco de dados"
+        Assertions.assertEquals(exceptionExpected, exception.message)
     }
 
     @Test
     fun createSegment() {
-
-        val segment = Segment(
-            9,
-            "test-rest-assured"
-        )
-
-        val segmentToReturn = util.segmentToReturn("test-rest-assured")
-
-        Mockito.`when`(segmentService.createSegment(segment)).thenReturn(segmentToReturn)
-
+        val segment = Segment(9, "test-rest-assured")
+        Mockito.`when`(segmentRepository.findAll()).thenReturn(util.getAllSegmentsDefault())
+        Mockito.`when`(segmentRepository.save(any())).thenReturn(segment)
+        Mockito.`when`(subSegmentRepository.save(any()))
+            .thenReturn(util.listSegmentsDefault()[1].subSegment[0])
         val segmentCreated = segmentService.createSegment(segment)
         Assertions.assertEquals(segment.segmentName, segmentCreated.segment.segmentName)
-
     }
 
-
+    @Test
+    fun createSegmentOverLimit() {
+        val segment = Segment(11, "test-rest-assured")
+        Mockito.`when`(segmentRepository.findAll()).thenReturn(util.gelAllSegmentsValueOnLimit())
+        val exception = assertThrows<BackendException> { segmentService.createSegment(segment) }
+        val exceptionExpected = "Atingiu a quantidade máxima Segmentos -> qtd max = 10"
+        Assertions.assertEquals(exceptionExpected, exception.message)
+    }
 }
+
+

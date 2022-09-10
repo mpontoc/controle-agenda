@@ -17,9 +17,6 @@ class SubSegmentController {
     @Autowired
     lateinit var subSegmentService: SubSegmentService
 
-    @Autowired
-    lateinit var subSegmentRepository: SubSegmentRepository
-
     @PostMapping("/{id}")
     fun createSubSegment(
         @PathVariable id: Long,
@@ -37,7 +34,7 @@ class SubSegmentController {
         @PathVariable id: Long,
         @RequestBody subSegment: SubSegment
     ): ResponseEntity<SubSegment> {
-        var subSegmentToEdit =
+        val subSegmentToEdit =
             SubSegment(
                 id, subSegment.subSegmentName, subSegment.message
             )

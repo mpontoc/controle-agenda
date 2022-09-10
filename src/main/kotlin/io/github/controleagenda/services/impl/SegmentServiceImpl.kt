@@ -28,7 +28,6 @@ class SegmentServiceImpl : SegmentService {
 
         if (segmentRepository.findById(id).isPresent) {
             val segment = segmentRepository.findSegmentById(id)
-
             return SegmentToReturn(
                 Segment(segment.id, segment.segmentName),
                 subSegmentRepository.findSubSegmentToSegmentID(id)
@@ -39,6 +38,7 @@ class SegmentServiceImpl : SegmentService {
     }
 
     override fun getAllSegments(): MutableList<SegmentToReturn> {
+
         val allSegments = segmentRepository.findAll()
         var subSegmentToSegment: MutableList<SubSegment>
 
@@ -74,7 +74,6 @@ class SegmentServiceImpl : SegmentService {
         val idSequence: Long
 
         if (allSegments < 10) {
-
             if (segment.id != null && allSegments < segment.id && !segmentRepository.findById(segment.id).isPresent) {
                 idSequence = segment.id
             } else {
@@ -104,7 +103,6 @@ class SegmentServiceImpl : SegmentService {
     override fun updateSegment(segment: Segment): SegmentToReturn {
 
         if (segmentRepository.findById(segment.id!!).isPresent) {
-
             val segmentToEdit = segmentRepository.save(Segment(segment.id, segment.segmentName))
 
             return SegmentToReturn(

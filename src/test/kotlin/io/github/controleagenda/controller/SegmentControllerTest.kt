@@ -1,6 +1,6 @@
 package io.github.controleagenda.controller
 
-import io.github.controleagenda.commons.Utils
+import io.github.controleagenda.commons.Util
 import io.github.controleagenda.exception.NotFoundException
 import io.github.controleagenda.model.Segment
 import io.github.controleagenda.model.SegmentToReturn
@@ -19,13 +19,12 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.boot.test.context.SpringBootTest
 import javax.annotation.Resource
 
-
 @ExtendWith(MockitoExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class SegmentControllerTest {
 
     @Mock
-    lateinit var util: Utils
+    lateinit var util: Util
 
     @Mock
     lateinit var segmentService: SegmentService
