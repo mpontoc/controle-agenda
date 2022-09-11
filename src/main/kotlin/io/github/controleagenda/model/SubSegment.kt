@@ -11,14 +11,14 @@ import javax.validation.constraints.Size
 data class SubSegment @JvmOverloads constructor(
 
     @Id
-    var id: Long? = null,
+    var id: Long? = 221,
     @JsonProperty("sub_segment_name")
     @field:NotEmpty(message = "Campo 'sub_segment_name' - Nome da Tarefa nao pode ser em branco")
     @field:Size(max = 20, message = "Campo 'sub_segment_name' - Excedeu max de 20 Caracteres para o nome da Tarefa")
-    val subSegmentName: String? = "",
-    val message: String? = "",
+    val subSegmentName: String? = "crie a sua tarefa",
+    val message: String? = "aqui descreva sua tarefa",
 
     @OneToOne
-    val segment: Segment = Segment(1, "")
+    val segment: Segment = Segment(111, "segment test")
 
 )

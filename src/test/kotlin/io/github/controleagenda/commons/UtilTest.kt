@@ -3,9 +3,8 @@ package io.github.controleagenda.commons
 import io.github.controleagenda.model.Segment
 import io.github.controleagenda.model.SegmentToReturn
 import io.github.controleagenda.model.SubSegment
-import io.github.controleagenda.services.SegmentService
 
-open class Util() {
+open class UtilTest() {
 
     fun listSegmentsDefault(): MutableList<SegmentToReturn> {
         return mutableListOf(

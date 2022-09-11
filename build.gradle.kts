@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "2.7.0"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    id("info.solidsoft.pitest") version "1.7.4"
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.spring") version "1.6.21"
     `jacoco-report-aggregation`

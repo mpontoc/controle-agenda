@@ -1,6 +1,6 @@
 package io.github.controleagenda.services
 
-import io.github.controleagenda.commons.Util
+import io.github.controleagenda.commons.UtilTest
 import io.github.controleagenda.exception.BackendException
 import io.github.controleagenda.exception.NotFoundException
 import io.github.controleagenda.model.Segment
@@ -31,14 +31,14 @@ class SegmentServiceTest {
     lateinit var subSegmentRepository: SubSegmentRepository
 
     @Mock
-    lateinit var util: Util
+    lateinit var utilTest: UtilTest
 
     @Test
     fun getAllSegmentsService() {
 
-        Mockito.`when`(segmentRepository.findAll()).thenReturn(util.getAllSegmentsDefault())
+        Mockito.`when`(segmentRepository.findAll()).thenReturn(utilTest.getAllSegmentsDefault())
         val segments = segmentService.getAllSegments()
-        if (segments.toString().contains(util.listSegmentsDefault()[1].segment.segmentName!!))
+        if (segments.toString().contains(utilTest.listSegmentsDefault()[1].segment.segmentName!!))
             Assertions.assertTrue(true)
         else
             Assertions.assertTrue(false)
@@ -47,12 +47,12 @@ class SegmentServiceTest {
     @Test
     fun getSegmentByIdService() {
         Mockito.`when`(segmentRepository.findById(2)).thenReturn(
-            Optional.of(util.listSegmentsDefault()[1].segment)
+            Optional.of(utilTest.listSegmentsDefault()[1].segment)
         )
-        Mockito.`when`(segmentRepository.findSegmentById(2)).thenReturn(util.listSegmentsDefault()[1].segment)
+        Mockito.`when`(segmentRepository.findSegmentById(2)).thenReturn(utilTest.listSegmentsDefault()[1].segment)
 
         val segment = segmentService.getSegmentById(2)
-        if (segment.toString().contains(util.listSegmentsDefault()[1].segment.segmentName!!))
+        if (segment.toString().contains(utilTest.listSegmentsDefault()[1].segment.segmentName!!))
             Assertions.assertTrue(true)
         else
             Assertions.assertTrue(false)
@@ -71,7 +71,7 @@ class SegmentServiceTest {
             Optional.of(Segment(10, "restTest"))
         )
         Mockito.`when`(subSegmentRepository.findSubSegmentToSegmentID(10)).thenReturn(
-            util.segmentToReturn("restTest").subSegment
+            utilTest.segmentToReturn("restTest").subSegment
         )
         segmentService.deleteSegment(10)
     }
@@ -97,7 +97,7 @@ class SegmentServiceTest {
     @Test
     fun editSegmentService() {
         Mockito.`when`(segmentRepository.findById(2)).thenReturn(
-            Optional.of(util.listSegmentsDefault()[1].segment)
+            Optional.of(utilTest.listSegmentsDefault()[1].segment)
         )
         Mockito.`when`(segmentRepository.save(any())).thenReturn(Segment(2, "segmentEdited"))
         val segment = segmentService.updateSegment(Segment(2, "segmentEdited"))
@@ -116,10 +116,10 @@ class SegmentServiceTest {
     @Test
     fun createSegment() {
         val segment = Segment(9, "test-rest-assured")
-        Mockito.`when`(segmentRepository.findAll()).thenReturn(util.getAllSegmentsDefault())
+        Mockito.`when`(segmentRepository.findAll()).thenReturn(utilTest.getAllSegmentsDefault())
         Mockito.`when`(segmentRepository.save(any())).thenReturn(segment)
         Mockito.`when`(subSegmentRepository.save(any()))
-            .thenReturn(util.listSegmentsDefault()[1].subSegment[0])
+            .thenReturn(utilTest.listSegmentsDefault()[1].subSegment[0])
         val segmentCreated = segmentService.createSegment(segment)
         Assertions.assertEquals(segment.segmentName, segmentCreated.segment.segmentName)
     }
@@ -127,7 +127,7 @@ class SegmentServiceTest {
     @Test
     fun createSegmentOverLimit() {
         val segment = Segment(11, "test-rest-assured")
-        Mockito.`when`(segmentRepository.findAll()).thenReturn(util.gelAllSegmentsValueOnLimit())
+        Mockito.`when`(segmentRepository.findAll()).thenReturn(utilTest.gelAllSegmentsValueOnLimit())
         val exception = assertThrows<BackendException> { segmentService.createSegment(segment) }
         val exceptionExpected = "Atingiu a quantidade máxima Segmentos -> qtd max = 10"
         Assertions.assertEquals(exceptionExpected, exception.message)

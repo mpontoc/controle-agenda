@@ -1,6 +1,6 @@
 package io.github.controleagenda.controller
 
-import io.github.controleagenda.commons.Util
+import io.github.controleagenda.commons.UtilTest
 import io.github.controleagenda.exception.NotFoundException
 import io.github.controleagenda.model.Segment
 import io.github.controleagenda.model.SegmentToReturn
@@ -24,7 +24,7 @@ import javax.annotation.Resource
 class SegmentControllerTest {
 
     @Mock
-    lateinit var util: Util
+    lateinit var utilTest: UtilTest
 
     @Mock
     lateinit var segmentService: SegmentService
@@ -36,7 +36,7 @@ class SegmentControllerTest {
     @Test
     fun testGetAllSegmentsByController() {
 
-        Mockito.`when`(segmentService.getAllSegments()).thenReturn(util.listSegmentsDefault())
+        Mockito.`when`(segmentService.getAllSegments()).thenReturn(utilTest.listSegmentsDefault())
 
         val response: Response =
             RestAssured
@@ -50,7 +50,7 @@ class SegmentControllerTest {
                 .all().extract().response()
 
         Assertions.assertEquals(
-            util.listSegmentsDefault()[3].segment.segmentName,
+            utilTest.listSegmentsDefault()[3].segment.segmentName,
             response.body.jsonPath().getJsonObject<JSONObject>("segment[3].segment_name")
         )
     }
@@ -58,7 +58,7 @@ class SegmentControllerTest {
     @Test
     fun testGetSegmentsByIdController() {
 
-        Mockito.`when`(segmentService.getSegmentById(2)).thenReturn(util.listSegmentsDefault()[1])
+        Mockito.`when`(segmentService.getSegmentById(2)).thenReturn(utilTest.listSegmentsDefault()[1])
 
         val response: Response =
             RestAssured
@@ -72,7 +72,7 @@ class SegmentControllerTest {
                 .all().extract().response()
 
         Assertions.assertEquals(
-            util.listSegmentsDefault()[1].segment.segmentName,
+            utilTest.listSegmentsDefault()[1].segment.segmentName,
             response.body.jsonPath().getJsonObject<JSONObject>("segment.segment_name")
         )
     }
@@ -127,7 +127,7 @@ class SegmentControllerTest {
     fun deleteSegmentByController() {
 
         Mockito.`when`(segmentService.deleteSegment(1)).thenReturn(
-            "O usuario ${util.listSegmentsDefault()[0].segment.segmentName} foi deltado com sucesso"
+            "O usuario ${utilTest.listSegmentsDefault()[0].segment.segmentName} foi deltado com sucesso"
         )
 
         val response = RestAssured
@@ -147,7 +147,7 @@ class SegmentControllerTest {
     fun editSegmentByController() {
 
         Mockito.`when`(segmentService.updateSegment(Segment(1, "segmentEdited")))
-            .thenReturn(util.segmentToReturn("segmentEdited"))
+            .thenReturn(utilTest.segmentToReturn("segmentEdited"))
 
         val response = RestAssured
             .given()

@@ -32,9 +32,7 @@ class SegmentServiceImpl : SegmentService {
                 Segment(segment.id, segment.segmentName),
                 subSegmentRepository.findSubSegmentToSegmentID(id)
             )
-        } else {
-            throw NotFoundException("Segmento com o id $id não existe no banco de dados")
-        }
+        } else throw NotFoundException("Segmento com o id $id não existe no banco de dados")
     }
 
     override fun getAllSegments(): MutableList<SegmentToReturn> {
@@ -55,7 +53,6 @@ class SegmentServiceImpl : SegmentService {
                 subSegments.filter {
                     it!!.segment.id == (segment.id)
                 } as MutableList<SubSegment>
-
             segmentToReturn.add(
                 SegmentToReturn(
                     Segment(segment.id, segment.segmentName.toString()),
@@ -64,7 +61,6 @@ class SegmentServiceImpl : SegmentService {
             )
             subSegmentToSegment.clear()
         }
-
         return segmentToReturn
     }
 
@@ -94,10 +90,7 @@ class SegmentServiceImpl : SegmentService {
                     )
                 )
             )
-        } else
-            throw BackendException(
-                message = "Atingiu a quantidade máxima Segmentos -> qtd max = 10",
-            )
+        } else throw BackendException("Atingiu a quantidade máxima Segmentos -> qtd max = 10")
     }
 
     override fun updateSegment(segment: Segment): SegmentToReturn {
@@ -109,9 +102,7 @@ class SegmentServiceImpl : SegmentService {
                 segmentToEdit,
                 subSegmentRepository.findSubSegmentToSegmentID(segment.id)
             )
-        } else {
-            throw NotFoundException("Segmento com o id ${segment.id} não existe no banco de dados")
-        }
+        } else throw NotFoundException("Segmento com o id ${segment.id} não existe no banco de dados")
     }
 
     override fun deleteSegment(id: Long): String {
@@ -127,9 +118,7 @@ class SegmentServiceImpl : SegmentService {
             val segment = segmentRepository.findById(id)
             segmentRepository.deleteById(id)
             return ("O usuario ${segment.get().segmentName} foi deletado com sucesso")
-        } else {
-            throw NotFoundException("Segmento com o id $id não existe no banco de dados")
-        }
+        } else throw NotFoundException("Segmento com o id $id não existe no banco de dados")
     }
 
 }
