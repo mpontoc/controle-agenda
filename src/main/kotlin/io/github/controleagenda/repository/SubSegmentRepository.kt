@@ -8,13 +8,13 @@ import org.springframework.stereotype.Repository
 
 
 @Repository
-interface SubSegmentRepository : JpaRepository<SubSegment?, Long?> {
+interface SubSegmentRepository : JpaRepository<SubSegment, Long> {
 
-    override fun findAll(): MutableList<SubSegment?>
+    override fun findAll(): MutableList<SubSegment>
 
-    fun findSubSegmentById(id: Long): SubSegment?
+    fun findSubSegmentById(id: Long): SubSegment
 
     @Query("FROM SubSegment WHERE segment_id = :idSegment")
-    fun findSubSegmentToSegmentID(@Param("idSegment") idSegment: Long): MutableList<SubSegment?>
+    fun findSubSegmentFromSegmentID(@Param("idSegment") idSegment: Long): MutableList<SubSegment>
 
 }

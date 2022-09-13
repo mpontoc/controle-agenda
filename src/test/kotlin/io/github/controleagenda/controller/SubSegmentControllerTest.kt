@@ -45,7 +45,7 @@ class SubSegmentControllerTest {
             )
         )
 
-        Mockito.`when`(subSegmentService.createSubSegment(9, segmentToReturn.subSegment[0]!!))
+        Mockito.`when`(subSegmentService.createSubSegment(9, segmentToReturn.subSegment[0]))
             .thenReturn(segmentToReturn)
 
         val response: Response =
@@ -53,7 +53,7 @@ class SubSegmentControllerTest {
                 .given()
                 .contentType("application/json")
                 .`when`()
-                .body(segmentToReturn.subSegment[0]!!)
+                .body(segmentToReturn.subSegment[0])
                 .post("/segmentos/sub-segmentos/9")
                 .then()
                 .statusCode(201)

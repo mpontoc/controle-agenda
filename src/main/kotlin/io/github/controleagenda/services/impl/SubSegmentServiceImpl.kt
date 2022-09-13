@@ -28,7 +28,7 @@ class SubSegmentServiceImpl : SubSegmentService {
 
         if (segmentRepository.findById(idSegment).isPresent) {
             val segment: Segment = segmentRepository.getById(idSegment)
-            if (subSegmentRepository.findSubSegmentToSegmentID(segment.id!!).count() < 20) {
+            if (subSegmentRepository.findSubSegmentFromSegmentID(segment.id).count() < 20) {
                 subSegmentRepository.save(
                     SubSegment(
                         util.idSequenceSubSegment(subSegmentRepository), subSegment.subSegmentName, subSegment.message,
@@ -39,7 +39,7 @@ class SubSegmentServiceImpl : SubSegmentService {
 
                 val subSegmentToSegment =
                     subSegments.filter {
-                        it!!.segment.id == (segment.id)
+                        it.segment.id == (segment.id)
                     } as MutableList<SubSegment>
                 return SegmentToReturn(
                     Segment(segment.id, segment.segmentName),
@@ -50,12 +50,12 @@ class SubSegmentServiceImpl : SubSegmentService {
     }
 
     override fun updateSubSegment(subSegment: SubSegment): SubSegment {
-        if (subSegmentRepository.findById(subSegment.id!!).isPresent) {
-            val subSegmentBase = subSegmentRepository.findSubSegmentById(subSegment.id!!)
+        if (subSegmentRepository.findById(subSegment.id).isPresent) {
+            val subSegmentBase = subSegmentRepository.findSubSegmentById(subSegment.id)
             return subSegmentRepository.save(
                 SubSegment(
                     subSegment.id, subSegment.subSegmentName, subSegment.message,
-                    Segment(subSegmentBase!!.segment.id, subSegmentBase.subSegmentName)
+                    Segment(subSegmentBase.segment.id, subSegmentBase.subSegmentName)
                 )
             )
         } else throw NotFoundException("SubSegmento com o id ${subSegment.id} não existe no banco de dados")

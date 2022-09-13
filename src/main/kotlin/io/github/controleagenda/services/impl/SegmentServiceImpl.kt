@@ -30,7 +30,7 @@ class SegmentServiceImpl : SegmentService {
             val segment = segmentRepository.findSegmentById(id)
             return SegmentToReturn(
                 Segment(segment.id, segment.segmentName),
-                subSegmentRepository.findSubSegmentToSegmentID(id)
+                subSegmentRepository.findSubSegmentFromSegmentID(id)
             )
         } else throw NotFoundException("Segmento com o id $id não existe no banco de dados")
     }
@@ -51,11 +51,11 @@ class SegmentServiceImpl : SegmentService {
         for (segment in allSegmentList) {
             subSegmentToSegment =
                 subSegments.filter {
-                    it!!.segment.id == (segment.id)
+                    it.segment.id == (segment.id)
                 } as MutableList<SubSegment>
             segmentToReturn.add(
                 SegmentToReturn(
-                    Segment(segment.id, segment.segmentName.toString()),
+                    Segment(segment.id, segment.segmentName),
                     subSegmentToSegment.toMutableList()
                 )
             )
@@ -95,12 +95,12 @@ class SegmentServiceImpl : SegmentService {
 
     override fun updateSegment(segment: Segment): SegmentToReturn {
 
-        if (segmentRepository.findById(segment.id!!).isPresent) {
+        if (segmentRepository.findById(segment.id).isPresent) {
             val segmentToEdit = segmentRepository.save(Segment(segment.id, segment.segmentName))
 
             return SegmentToReturn(
                 segmentToEdit,
-                subSegmentRepository.findSubSegmentToSegmentID(segment.id)
+                subSegmentRepository.findSubSegmentFromSegmentID(segment.id)
             )
         } else throw NotFoundException("Segmento com o id ${segment.id} não existe no banco de dados")
     }
@@ -110,9 +110,9 @@ class SegmentServiceImpl : SegmentService {
         if (id in 1..6) {
             throw BackendException("Não é possível apagar os valores default")
         } else if (segmentRepository.findById(id).isPresent) {
-            val subSegmentBySegmentId = subSegmentRepository.findSubSegmentToSegmentID(id)
+            val subSegmentBySegmentId = subSegmentRepository.findSubSegmentFromSegmentID(id)
             subSegmentBySegmentId.forEach {
-                it!!.id
+                it.id
                 subSegmentRepository.delete(it)
             }
             val segment = segmentRepository.findById(id)

@@ -38,7 +38,7 @@ class SegmentServiceTest {
 
         Mockito.`when`(segmentRepository.findAll()).thenReturn(utilTest.getAllSegmentsDefault())
         val segments = segmentService.getAllSegments()
-        if (segments.toString().contains(utilTest.listSegmentsDefault()[1].segment.segmentName!!))
+        if (segments.toString().contains(utilTest.listSegmentsDefault()[1].segment.segmentName))
             Assertions.assertTrue(true)
         else
             Assertions.assertTrue(false)
@@ -52,7 +52,7 @@ class SegmentServiceTest {
         Mockito.`when`(segmentRepository.findSegmentById(2)).thenReturn(utilTest.listSegmentsDefault()[1].segment)
 
         val segment = segmentService.getSegmentById(2)
-        if (segment.toString().contains(utilTest.listSegmentsDefault()[1].segment.segmentName!!))
+        if (segment.toString().contains(utilTest.listSegmentsDefault()[1].segment.segmentName))
             Assertions.assertTrue(true)
         else
             Assertions.assertTrue(false)
@@ -70,7 +70,7 @@ class SegmentServiceTest {
         Mockito.`when`(segmentRepository.findById(10)).thenReturn(
             Optional.of(Segment(10, "restTest"))
         )
-        Mockito.`when`(subSegmentRepository.findSubSegmentToSegmentID(10)).thenReturn(
+        Mockito.`when`(subSegmentRepository.findSubSegmentFromSegmentID(10)).thenReturn(
             utilTest.segmentToReturn("restTest").subSegment
         )
         segmentService.deleteSegment(10)
