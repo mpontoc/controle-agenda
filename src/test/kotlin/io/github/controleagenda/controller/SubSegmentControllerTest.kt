@@ -54,7 +54,7 @@ class SubSegmentControllerTest {
                 .contentType("application/json")
                 .`when`()
                 .body(segmentToReturn.subSegment[0])
-                .post("/segmentos/sub-segmentos/9")
+                .post("/controleagenda/segmentos/sub-segmentos/9")
                 .then()
                 .statusCode(201)
                 .log()
@@ -77,7 +77,7 @@ class SubSegmentControllerTest {
 //            .given()
 //            .contentType("application/json")
 //            .`when`()
-//            .delete("/segmentos/sub-segmentos/1")
+//            .delete("/controleagenda/segmentos/sub-segmentos/1")
 //            .then()
 //            .statusCode(204)
 //            .log()
@@ -99,7 +99,7 @@ class SubSegmentControllerTest {
 //            .body(
 //                "{\"segment_name\": \"segmentEdited\"}"
 //            )
-//            .put("/segmentos/sub-segmentos/1")
+//            .put("/controleagenda/segmentos/sub-segmentos/1")
 //            .then()
 //            .statusCode(200)
 //            .log()
