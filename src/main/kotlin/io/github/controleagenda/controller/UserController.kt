@@ -1,13 +1,15 @@
 package io.github.controleagenda.controller
 
 import io.github.controleagenda.model.User
+import io.github.controleagenda.model.dto.UserDTO
 import io.github.controleagenda.services.UserService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.util.UriComponentsBuilder
 import java.util.*
+import javax.servlet.http.HttpServletRequest
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/user")
@@ -16,13 +18,25 @@ class UserController {
     @Autowired
     lateinit var userService: UserService
 
-    @GetMapping()
+    @GetMapping
     fun getAllUsers() =
         userService.getAllUsers()
 
     @GetMapping("/{id}")
-    fun getUserById(@PathVariable id: Long): Optional<User?> {
-
+    fun getUserById(@PathVariable id: Long): UserDTO {
         return userService.getUserById(id)
+    }
+
+    @PostMapping
+    fun addUser(
+        @RequestBody @Valid user: User,
+        uriComponentsBuilder: UriComponentsBuilder,
+        request: HttpServletRequest
+    ): ResponseEntity<*> {
+        val response = userService.addUser(user)
+        val idSequence = 1
+        val uri = uriComponentsBuilder.path("segmentos/${idSequence}/").build().toUri()
+        return ResponseEntity.created(uri).body(response)
+
     }
 }

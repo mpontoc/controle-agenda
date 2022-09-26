@@ -1,19 +1,22 @@
 package io.github.controleagenda.model
 
-import javax.persistence.Entity
-import javax.persistence.Id
+import javax.persistence.*
+import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.Size
 
 @Entity
-data class User(
+data class User  @JvmOverloads constructor(
 
     @Id
-    val id: Long,
-    val usuario: String,
-    val senha: String,
+    val id: Long? = 1,
+    @field:NotEmpty
+    @field:Size(max = 20, message = "Campo 'sub_segment_name' - Excedeu max de 20 Caracteres para o nome de Usuario")
+    val userName: String? = "",
+    val password: String? = "",
 
-    ) {
-    constructor() : this(
-        -1, "",
-        ""
-    )
-}
+    @OneToOne
+    val segment: Segment? = null,
+    @OneToOne
+    val subSegment: SubSegment? = null
+
+)

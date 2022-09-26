@@ -12,7 +12,7 @@ interface SubSegmentRepository : JpaRepository<SubSegment, Long> {
 
     override fun findAll(): MutableList<SubSegment>
 
-    fun findSubSegmentById(id: Long): SubSegment
+//    fun findSubSegmentById(id: Long): SubSegment
 
     @Query("FROM SubSegment WHERE segment_id = :idSegment")
     fun findSubSegmentFromSegmentID(@Param("idSegment") idSegment: Long): MutableList<SubSegment>

@@ -18,13 +18,13 @@ class SegmentController {
     @Autowired
     lateinit var segmentService: SegmentService
 
-    @GetMapping
-    fun getAllSegments() =
-        segmentService.getAllSegments()
+    @PostMapping("/{userId}")
+    fun getAllSegments(@PathVariable userId: Long) =
+        segmentService.getAllSegments(userId)
 
     @GetMapping("/{id}")
     fun getSegmentById(@PathVariable id: Long): ResponseEntity<SegmentToReturn> {
-        return ResponseEntity.ok(segmentService.getSegmentById(id))
+        return ResponseEntity.ok(segmentService.getSegmentById(1, id))
     }
 
     @PostMapping
@@ -33,8 +33,8 @@ class SegmentController {
         uriComponentsBuilder: UriComponentsBuilder,
         request: HttpServletRequest
     ): ResponseEntity<*> {
-        val response = segmentService.createSegment(segment)
-        val idSequence = response.segment.id
+        val response = segmentService.createSegment(1,segment)
+        val idSequence = 1
         val uri = uriComponentsBuilder.path("segmentos/${idSequence}/").build().toUri()
         return ResponseEntity.created(uri).body(response)
     }
@@ -45,7 +45,7 @@ class SegmentController {
         @RequestBody segment: Segment
     ): ResponseEntity<SegmentToReturn> {
         val segmentToEdit = Segment(id, segment.segmentName)
-        return ResponseEntity.ok(segmentService.updateSegment(segmentToEdit))
+        return ResponseEntity.ok(segmentService.updateSegment(1,segmentToEdit))
     }
 
     @DeleteMapping("/{id}")

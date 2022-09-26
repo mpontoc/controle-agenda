@@ -1,7 +1,6 @@
 package io.github.controleagenda.controller
 
 import io.github.controleagenda.model.SubSegment
-import io.github.controleagenda.repository.SubSegmentRepository
 import io.github.controleagenda.services.SubSegmentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -17,14 +16,14 @@ class SubSegmentController {
     @Autowired
     lateinit var subSegmentService: SubSegmentService
 
-    @PostMapping("/{id}")
+    @PostMapping("/{userId}")
     fun createSubSegment(
-        @PathVariable id: Long,
+        @PathVariable userId: Long,
         @RequestBody @Valid subSegment: SubSegment,
         uriBuilder: UriComponentsBuilder
     ): ResponseEntity<*> {
-        val response = subSegmentService.createSubSegment(id, subSegment)
-        val idSequence = response.segment.id
+        val response = subSegmentService.createSubSegment(userId, subSegment)
+        val idSequence = 11
         val uri = uriBuilder.path("segmentos/${idSequence}/").build().toUri()
         return ResponseEntity.created(uri).body(response)
     }
