@@ -12,7 +12,7 @@ data class Segment @JvmOverloads constructor(
     val segmentId: Long = 1,
     @JsonProperty("segment_name")
     @field:NotEmpty(message = "Campo 'segment_name' - Nome do Segemento nao pode ser em branco")
-    @field:Size(max = 20, message = "Campo 'segment_name' - Excedeu max de 20 Caracteres para o nome do Segmento")
+//    @field:Size(max = 20, message = "Campo 'segment_name' - Excedeu max de 20 Caracteres para o nome do Segmento")
     val segmentName: String = "segmentDefault",
 
     @OneToOne

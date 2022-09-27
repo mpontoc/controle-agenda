@@ -8,6 +8,7 @@ import io.github.controleagenda.model.SubSegment
 import io.github.controleagenda.model.dto.SegmentDTO
 import io.github.controleagenda.model.dto.SegmentResponse
 import io.github.controleagenda.model.dto.SubSegmentDTO
+import io.github.controleagenda.model.dto.UserDTO
 import io.github.controleagenda.repository.SegmentRepository
 import io.github.controleagenda.repository.SubSegmentRepository
 import io.github.controleagenda.repository.UserRepository
@@ -31,13 +32,55 @@ class SegmentServiceImpl : SegmentService {
 
     val util = Util()
 
-    override fun getSegmentById(userId: Long, idSegment: Long): SegmentToReturn {
+    override fun getSegmentById(userId: Long): SegmentToReturn {
         val user = userRepository.findUserById(userId)
         val allSegments: MutableList<Segment> = segmentRepository.findSegmentsFromUserID(userId)
         val allSubSegments: MutableList<SubSegment> = segmentRepository.findSubSegmentsFromUserID(userId)
         val segments: MutableList<SegmentDTO> = mutableListOf()
         val subSegments: MutableList<SubSegmentDTO> = mutableListOf()
 
+        return util.segmentToReturn(allSubSegments, subSegments, allSegments, segments, user)
+    }
+
+    override fun createSegment(userId: Long, segment: Segment): SegmentToReturn {
+
+        val user = userRepository.findUserById(userId)
+        val userToSet = userRepository.getById(userId)
+        var allSegments = segmentRepository.findSegmentsFromUserID(userId)
+        val segments: MutableList<SegmentDTO> = mutableListOf()
+        val subSegments: MutableList<SubSegmentDTO> = mutableListOf()
+
+        if (allSegments.count() < 10) {
+
+            val segmentToFill: Segment =
+                segmentRepository.save(
+                    Segment(
+                        util.idSequenceSegment(segmentRepository),
+                        segment.segmentName
+                    )
+                )
+
+            util.createSubSegmentDefault(
+                userToSet,
+                userRepository,
+                segmentToFill,
+                segmentRepository,
+                subSegmentRepository
+            )
+
+            allSegments = segmentRepository.findSegmentsFromUserID(userId)
+            val allSubSegments = segmentRepository.findSubSegmentsFromUserID(userId)
+            return util.segmentToReturn(allSubSegments, subSegments, allSegments, segments, user)
+        } else throw BackendException("Atingiu a quantidade máxima Segmentos -> qtd max = 10")
+    }
+
+    private fun segmentToReturn(
+        allSubSegments: MutableList<SubSegment>,
+        subSegments: MutableList<SubSegmentDTO>,
+        allSegments: MutableList<Segment>,
+        segments: MutableList<SegmentDTO>,
+        user: UserDTO
+    ): SegmentToReturn {
         for (subSegment in allSubSegments) {
             subSegments.add(
                 SubSegmentDTO(
@@ -75,105 +118,16 @@ class SegmentServiceImpl : SegmentService {
                 )
             )
         }
-
         return SegmentToReturn(
             user,
             segments
         )
-    }
-
-    override fun getAllSegments(userId: Long): SegmentToReturn {
-
-        val user = userRepository.findUserById(userId)
-        val allSegments = segmentRepository.findSegmentsFromUserID(userId)
-        val allSubSegments = segmentRepository.findSubSegmentsFromUserID(userId)
-        val segments: MutableList<SegmentDTO> = mutableListOf()
-        val subSegments: MutableList<SubSegmentDTO> = mutableListOf()
-
-        if (allSegments.count() <= 1) {
-            util.initSegments(userId, userRepository, segmentRepository, subSegmentRepository)
-        }
-
-        for (subSegment in allSubSegments) {
-            subSegments.add(
-                SubSegmentDTO(
-                    subSegment.subSementId,
-                    subSegment.subSegmentName,
-                    subSegment.message,
-                    SegmentResponse(
-                        subSegment.segment!!.segmentId,
-                        subSegment.segment.segmentName
-                    )
-                )
-            )
-        }
-
-        for (segment in allSegments) {
-            segments.add(
-                SegmentDTO(
-                    segment.segmentId, segment.segmentName,
-                    subSegments.filter {
-                        it.segment!!.segmentId == segment.segmentId
-                    } as MutableList<SubSegmentDTO?>
-                )
-            )
-        }
-
-        return SegmentToReturn(
-            user,
-            segments
-        )
-
-    }
-
-    override fun createSegment(userId: Long, segment: Segment): SegmentToReturn {
-
-        val user = userRepository.findUserById(userId)
-        var allSegments = segmentRepository.findSegmentsFromUserID(userId)
-        val allSubSegments = segmentRepository.findSubSegmentsFromUserID(userId)
-
-        if (allSegments.count() < 10) {
-            Segment(util.idSequenceSegment(segmentRepository), segment.segmentName)
-            allSegments = segmentRepository.findSegmentsFromUserID(userId)
-            val segments: MutableList<SegmentDTO> = ArrayList()
-            val subSegments: MutableList<SubSegmentDTO> = ArrayList()
-
-            for (subSegment in allSubSegments) {
-                subSegments.add(
-                    SubSegmentDTO(
-                        subSegment.subSementId,
-                        subSegment.subSegmentName,
-                        subSegment.message,
-                        SegmentResponse(
-                            subSegment.segment!!.segmentId,
-                            subSegment.segment.segmentName
-                        )
-                    )
-                )
-            }
-
-            for (segment in allSegments) {
-                segments.add(
-                    SegmentDTO(
-                        segment.segmentId, segment.segmentName,
-                        subSegments.filter {
-                            it.segment!!.segmentId == segment.segmentId
-                        } as MutableList<SubSegmentDTO?>
-                    )
-                )
-            }
-
-            return SegmentToReturn(
-                user,
-                segments
-            )
-        } else throw BackendException("Atingiu a quantidade máxima Segmentos -> qtd max = 10")
     }
 
     override fun updateSegment(userId: Long, segment: Segment): SegmentToReturn {
 
         val user = userRepository.findUserById(userId)
-        var allSegments = segmentRepository.findSegmentsFromUserID(userId)
+        val allSegments = segmentRepository.findSegmentsFromUserID(userId)
         val allSubSegments = segmentRepository.findSubSegmentsFromUserID(userId)
         val segments: MutableList<SegmentDTO> = ArrayList()
         val subSegments: MutableList<SubSegmentDTO> = ArrayList()
@@ -200,7 +154,7 @@ class SegmentServiceImpl : SegmentService {
                     SegmentDTO(
                         segment.segmentId, segment.segmentName,
                         subSegments.filter {
-                            it.segment!!.segmentId == segment.segmentId
+                            it.segment.segmentId == segment.segmentId
                         } as MutableList<SubSegmentDTO?>
                     )
                 )

@@ -18,22 +18,23 @@ class SegmentController {
     @Autowired
     lateinit var segmentService: SegmentService
 
-    @PostMapping("/{userId}")
-    fun getAllSegments(@PathVariable userId: Long) =
-        segmentService.getAllSegments(userId)
+//    @PostMapping("/{userId}")
+//    fun getAllSegments(@PathVariable userId: Long) =
+//        segmentService.getAllSegments(userId)
 
-    @GetMapping("/{id}")
-    fun getSegmentById(@PathVariable id: Long): ResponseEntity<SegmentToReturn> {
-        return ResponseEntity.ok(segmentService.getSegmentById(1, id))
+    @GetMapping("/{userId}")
+    fun getSegmentById(@PathVariable userId: Long): ResponseEntity<SegmentToReturn> {
+        return ResponseEntity.ok(segmentService.getSegmentById(userId))
     }
 
-    @PostMapping
+    @PostMapping("/{userId}")
     fun createSegment(
-        @RequestBody @Valid segment: Segment,
+        @PathVariable userId: Long,
+        @RequestBody segment: Segment,
         uriComponentsBuilder: UriComponentsBuilder,
         request: HttpServletRequest
     ): ResponseEntity<*> {
-        val response = segmentService.createSegment(1,segment)
+        val response = segmentService.createSegment(userId, segment)
         val idSequence = 1
         val uri = uriComponentsBuilder.path("segmentos/${idSequence}/").build().toUri()
         return ResponseEntity.created(uri).body(response)
@@ -45,7 +46,7 @@ class SegmentController {
         @RequestBody segment: Segment
     ): ResponseEntity<SegmentToReturn> {
         val segmentToEdit = Segment(id, segment.segmentName)
-        return ResponseEntity.ok(segmentService.updateSegment(1,segmentToEdit))
+        return ResponseEntity.ok(segmentService.updateSegment(1, segmentToEdit))
     }
 
     @DeleteMapping("/{id}")

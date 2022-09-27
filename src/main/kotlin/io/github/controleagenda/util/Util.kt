@@ -14,7 +14,8 @@ import io.github.controleagenda.repository.UserRepository
 
 open class Util {
 
-    val subSegmentDefault: List<String> = listOf("crie a sua tarefa", "aqui descreva sua tarefa")
+    fun subSegmentDefault(subSegmentRepository: SubSegmentRepository) =
+        SubSegment(idSequenceSubSegment(subSegmentRepository), "crie a sua tarefa", "aqui descreva sua tarefa")
 
     fun initSegments(
         userID: Long,
@@ -24,6 +25,7 @@ open class Util {
     ) {
 
         val user: User = userRepository.getById(userID)
+        val subSegmentDefaultToFill = subSegmentDefault(subSegmentRepository)
 
         val segments: List<String> = listOf(
             "Academia", "Alimentação", "Educação", "Esporte", "Familiar", "Saúde"
@@ -34,8 +36,8 @@ open class Util {
             val subSegmentToFill: SubSegment = subSegmentRepository.save(
                 SubSegment(
                     idSequenceSubSegment(subSegmentRepository),
-                    subSegmentDefault[0],
-                    subSegmentDefault[1],
+                    subSegmentDefaultToFill.subSegmentName,
+                    subSegmentDefaultToFill.message,
                     user,
                     segmentToFill
                 )
@@ -54,6 +56,42 @@ open class Util {
                 )
             )
         }
+    }
+
+    fun createSubSegmentDefault(
+        user: User,
+        userRepository: UserRepository,
+        segment: Segment,
+        segmentRepository: SegmentRepository,
+        subSegmentRepository: SubSegmentRepository
+    ): SubSegment {
+
+        val subSegmentDefaultToFill = subSegmentDefault(subSegmentRepository)
+
+        val subSegmentToFill: SubSegment = subSegmentRepository.save(
+            SubSegment(
+                subSegmentDefaultToFill.subSementId,
+                subSegmentDefaultToFill.subSegmentName,
+                subSegmentDefaultToFill.message,
+                user,
+                segment
+            )
+        )
+        userRepository.save(
+            User(
+                user.id, user.userName, user.password,
+                segmentRepository.save(
+                    Segment(
+                        segment.segmentId, segment.segmentName,
+                        user,
+                        subSegmentToFill
+                    )
+                ),
+                subSegmentToFill
+            )
+        )
+
+        return subSegmentToFill
     }
 
     fun idSequenceSegment(segmentRepository: SegmentRepository): Long {
@@ -87,15 +125,12 @@ open class Util {
     }
 
     fun segmentToReturn(
-        segmentRepository: SegmentRepository,
-        userId: Long,
+        allSubSegments: MutableList<SubSegment>,
         subSegments: MutableList<SubSegmentDTO>,
-        segment: Segment,
         allSegments: MutableList<Segment>,
         segments: MutableList<SegmentDTO>,
-        user: User
+        user: UserDTO
     ): SegmentToReturn {
-        val allSubSegments: MutableList<SubSegment> = segmentRepository.findSubSegmentsFromUserID(userId)
         for (subSegment in allSubSegments) {
             subSegments.add(
                 SubSegmentDTO(
@@ -104,12 +139,14 @@ open class Util {
                     subSegment.message,
                     SegmentResponse(
                         subSegment.segment!!.segmentId,
-                        segment.segmentName,
+                        subSegment.segment.segmentName,
                     )
                 )
             )
         }
+
         for (segment in allSegments) {
+
             val subSegmentToReturn: MutableList<SubSegmentDTO> = mutableListOf()
             for (subSegment in subSegments) {
                 if (subSegment.segment.segmentId == segment.segmentId) {
@@ -132,7 +169,7 @@ open class Util {
             )
         }
         return SegmentToReturn(
-            UserDTO(user.id!!, user.userName!!),
+            user,
             segments
         )
     }
