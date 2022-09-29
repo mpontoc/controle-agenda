@@ -70,7 +70,7 @@ open class Util {
 
         val subSegmentToFill: SubSegment = subSegmentRepository.save(
             SubSegment(
-                subSegmentDefaultToFill.subSementId,
+                subSegmentDefaultToFill.subSegmentId,
                 subSegmentDefaultToFill.subSegmentName,
                 subSegmentDefaultToFill.message,
                 user,
@@ -134,7 +134,7 @@ open class Util {
         for (subSegment in allSubSegments) {
             subSegments.add(
                 SubSegmentDTO(
-                    subSegment.subSementId,
+                    subSegment.subSegmentId,
                     subSegment.subSegmentName,
                     subSegment.message,
                     SegmentResponse(

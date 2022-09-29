@@ -7,9 +7,7 @@ import io.github.controleagenda.model.SegmentToReturn
 import io.github.controleagenda.model.SubSegment
 import io.github.controleagenda.model.User
 import io.github.controleagenda.model.dto.SegmentDTO
-import io.github.controleagenda.model.dto.SegmentResponse
 import io.github.controleagenda.model.dto.SubSegmentDTO
-import io.github.controleagenda.model.dto.UserDTO
 import io.github.controleagenda.repository.SegmentRepository
 import io.github.controleagenda.repository.SubSegmentRepository
 import io.github.controleagenda.repository.UserRepository
@@ -67,15 +65,15 @@ class SubSegmentServiceImpl : SubSegmentService {
 
 
     override fun updateSubSegment(subSegment: SubSegment): SubSegment {
-        if (subSegmentRepository.findById(subSegment.subSementId).isPresent) {
+        if (subSegmentRepository.findById(subSegment.subSegmentId).isPresent) {
 //            val subSegmentBase = subSegmentRepository.findSubSegmentById(subSegment.subSementId)
             return subSegmentRepository.save(
                 SubSegment(
-                    subSegment.subSementId, subSegment.subSegmentName, subSegment.message,
+                    subSegment.subSegmentId, subSegment.subSegmentName, subSegment.message,
 //                    Segment(subSegmentBase.segment.id, subSegmentBase.subSegmentName)
                 )
             )
-        } else throw NotFoundException("SubSegmento com o id ${subSegment.subSementId} não existe no banco de dados")
+        } else throw NotFoundException("SubSegmento com o id ${subSegment.subSegmentId} não existe no banco de dados")
     }
 
     override fun deleteSubSegment(idSubSegment: Long) {

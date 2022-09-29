@@ -12,3 +12,12 @@ data class SegmentToReturn(
     val segment: MutableList<SegmentDTO>
 
 )
+
+data class SegmentOnlyOneToReturn(
+
+    @JsonProperty("user")
+    val user: UserDTO,
+    @JsonProperty("segment")
+    val segment: SegmentDTO
+
+)
