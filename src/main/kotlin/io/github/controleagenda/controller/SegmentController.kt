@@ -3,8 +3,9 @@ package io.github.controleagenda.controller
 import io.github.controleagenda.model.Segment
 import io.github.controleagenda.model.SegmentOnlyOneToReturn
 import io.github.controleagenda.model.SegmentToReturn
-import io.github.controleagenda.model.dto.SegmentDTO
+import io.github.controleagenda.repository.SegmentRepository
 import io.github.controleagenda.services.SegmentService
+import io.github.controleagenda.util.Util
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -13,49 +14,61 @@ import org.springframework.web.util.UriComponentsBuilder
 import javax.servlet.http.HttpServletRequest
 
 @RestController
-@RequestMapping("/segmentos")
+@RequestMapping("/user/{userId}/segmentos")
 class SegmentController {
 
     @Autowired
     lateinit var segmentService: SegmentService
 
-    @GetMapping("/{userId}")
-    fun getAllSegments(@PathVariable userId: Long) =
+    @Autowired
+    lateinit var segmentRepository: SegmentRepository
+
+    val util = Util()
+
+    @GetMapping("/all")
+    fun getAllSegments(@PathVariable("userId") userId: Long) =
         segmentService.getAllSegments(userId)
 
-    @GetMapping("/{userId}/segmento")
+    @GetMapping("/{segmentId}")
     fun getSegmentById(
-        @PathVariable userId: Long,
-        @RequestParam("segmentId") segmentId: Long
+        @PathVariable("userId") userId: Long,
+        @PathVariable("segmentId") segmentId: Long,
     ): ResponseEntity<SegmentOnlyOneToReturn> {
         return ResponseEntity.ok(segmentService.getSegmentById(userId, segmentId))
     }
 
-    @PostMapping("/{userId}")
+    @PostMapping
     fun createSegment(
-        @PathVariable userId: Long,
+        @PathVariable("userId") userId: Long,
         @RequestBody segment: Segment,
         uriComponentsBuilder: UriComponentsBuilder,
         request: HttpServletRequest
     ): ResponseEntity<*> {
-        val response = segmentService.createSegment(userId, segment)
-        val idSequence = response.user.id
-        val uri = uriComponentsBuilder.path("segmentos/${idSequence}/").build().toUri()
+        val idSequence = util.idSequenceSegment(segmentRepository)
+        val _segment = segment
+        _segment.id = idSequence
+        val response = segmentService.createSegment(userId, _segment)
+        val uri =
+            uriComponentsBuilder.path("/segmentos/${response.user.id}/segmento").queryParam("id=${idSequence}").build()
+                .toUri()
         return ResponseEntity.created(uri).body(response)
     }
 
-    @PutMapping("/{userId}")
+    @PutMapping
     fun editSegment(
-        @PathVariable userId: Long,
+        @PathVariable("userId") userId: Long,
         @RequestBody segment: Segment
     ): ResponseEntity<SegmentToReturn> {
         return ResponseEntity.ok(segmentService.updateSegment(userId, segment))
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{segmentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteSegment(@PathVariable id: Long): ResponseEntity<Void> {
-        segmentService.deleteSegment(id)
+    fun deleteSegment(
+        @PathVariable("userId") userId: Long,
+        @PathVariable("segmentId") segmentId: Long,
+    ): ResponseEntity<Void> {
+        segmentService.deleteSegment(userId, segmentId)
         return ResponseEntity.noContent().build()
     }
 }

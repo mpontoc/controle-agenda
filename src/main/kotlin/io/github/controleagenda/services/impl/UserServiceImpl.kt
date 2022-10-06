@@ -1,7 +1,5 @@
 package io.github.controleagenda.services.impl
 
-import io.github.controleagenda.model.Segment
-import io.github.controleagenda.model.SubSegment
 import io.github.controleagenda.model.User
 import io.github.controleagenda.model.dto.UserDTO
 import io.github.controleagenda.repository.SegmentRepository

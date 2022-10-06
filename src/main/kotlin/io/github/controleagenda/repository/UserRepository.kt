@@ -4,7 +4,6 @@ import io.github.controleagenda.model.User
 import io.github.controleagenda.model.dto.UserDTO
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
-import java.util.*
 
 
 @Repository

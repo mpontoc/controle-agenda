@@ -70,7 +70,7 @@ class SegmentServiceTest {
         Mockito.`when`(segmentRepository.findById(10)).thenReturn(
             Optional.of(Segment(10, "restTest"))
         )
-        Mockito.`when`(subSegmentRepository.findSubSegmentFromSegmentID(10)).thenReturn(
+        Mockito.`when`(subSegmentRepository.findSubSegmentsFromSegmentID(10)).thenReturn(
             utilTest.segmentToReturn("restTest").subSegment
         )
         segmentService.deleteSegment(10)

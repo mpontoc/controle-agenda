@@ -14,6 +14,10 @@ import io.github.controleagenda.repository.UserRepository
 
 open class Util {
 
+    val segments: List<String> = listOf(
+        "Academia", "Alimentação", "Educação", "Esporte", "Familiar", "Saúde"
+    )
+
     fun subSegmentDefault(subSegmentRepository: SubSegmentRepository) =
         SubSegment(idSequenceSubSegment(subSegmentRepository), "crie a sua tarefa", "aqui descreva sua tarefa")
 
@@ -26,10 +30,6 @@ open class Util {
 
         val user: User = userRepository.getById(userID)
         val subSegmentDefaultToFill = subSegmentDefault(subSegmentRepository)
-
-        val segments: List<String> = listOf(
-            "Academia", "Alimentação", "Educação", "Esporte", "Familiar", "Saúde"
-        )
 
         for (segment in segments) {
             val segmentToFill: Segment = segmentRepository.save(Segment(idSequenceSegment(segmentRepository), segment))
@@ -45,14 +45,16 @@ open class Util {
             userRepository.save(
                 User(
                     user.id, user.userName, user.password,
-                    segmentRepository.save(
-                        Segment(
-                            segmentToFill.segmentId, segmentToFill.segmentName,
-                            user,
-                            subSegmentToFill
+                    mutableListOf(
+                        segmentRepository.save(
+                            Segment(
+                                segmentToFill.id, segmentToFill.segmentName,
+                                user,
+//                                mutableListOf(subSegmentToFill)
+                            )
                         )
                     ),
-                    subSegmentToFill
+//                        subSegmentToFill
                 )
             )
         }
@@ -70,7 +72,7 @@ open class Util {
 
         val subSegmentToFill: SubSegment = subSegmentRepository.save(
             SubSegment(
-                subSegmentDefaultToFill.subSegmentId,
+                subSegmentDefaultToFill.id,
                 subSegmentDefaultToFill.subSegmentName,
                 subSegmentDefaultToFill.message,
                 user,
@@ -80,14 +82,16 @@ open class Util {
         userRepository.save(
             User(
                 user.id, user.userName, user.password,
-                segmentRepository.save(
-                    Segment(
-                        segment.segmentId, segment.segmentName,
-                        user,
-                        subSegmentToFill
-                    )
-                ),
-                subSegmentToFill
+                mutableListOf(
+                    segmentRepository.save(
+                        Segment(
+                            segment.id, segment.segmentName,
+                            user,
+                            mutableListOf( subSegmentToFill)
+                        )
+                    ),
+//                subSegmentToFill
+                )
             )
         )
 
@@ -134,11 +138,11 @@ open class Util {
         for (subSegment in allSubSegments) {
             subSegments.add(
                 SubSegmentDTO(
-                    subSegment.subSegmentId,
+                    subSegment.id,
                     subSegment.subSegmentName,
                     subSegment.message,
                     SegmentResponse(
-                        subSegment.segment!!.segmentId,
+                        subSegment.segment!!.id,
                         subSegment.segment.segmentName,
                     )
                 )
@@ -149,13 +153,13 @@ open class Util {
 
             val subSegmentToReturn: MutableList<SubSegmentDTO> = mutableListOf()
             for (subSegment in subSegments) {
-                if (subSegment.segment.segmentId == segment.segmentId) {
+                if (subSegment.segment.segmentId == segment.id) {
                     subSegmentToReturn.add(
                         SubSegmentDTO(
                             subSegment.subSegmentId,
                             subSegment.subSegmentName,
                             subSegment.message,
-                            SegmentResponse(segment.segmentId, segment.segmentName)
+                            SegmentResponse(segment.id, segment.segmentName)
                         )
                     )
                 }
@@ -163,7 +167,7 @@ open class Util {
 
             segments.add(
                 SegmentDTO(
-                    segment.segmentId, segment.segmentName,
+                    segment.id, segment.segmentName,
                     subSegmentToReturn.toMutableList()
                 )
             )

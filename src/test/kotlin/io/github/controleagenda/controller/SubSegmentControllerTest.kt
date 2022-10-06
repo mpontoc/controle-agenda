@@ -45,7 +45,7 @@ class SubSegmentControllerTest {
             )
         )
 
-        Mockito.`when`(subSegmentService.createSubSegment(9, segmentToReturn.subSegment[0]))
+        Mockito.`when`(subSegmentService.createSubSegment(9, segmentId, segmentToReturn.subSegment[0]))
             .thenReturn(segmentToReturn)
 
         val response: Response =

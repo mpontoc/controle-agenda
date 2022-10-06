@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
-import java.util.*
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
@@ -34,7 +33,7 @@ class UserController {
         request: HttpServletRequest
     ): ResponseEntity<*> {
         val response = userService.addUser(user)
-        val idSequence = 1
+        val idSequence = response.id
         val uri = uriComponentsBuilder.path("segmentos/${idSequence}/").build().toUri()
         return ResponseEntity.created(uri).body(response)
 
