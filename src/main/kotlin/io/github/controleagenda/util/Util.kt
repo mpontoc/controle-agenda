@@ -50,11 +50,10 @@ open class Util {
                             Segment(
                                 segmentToFill.id, segmentToFill.segmentName,
                                 user,
-//                                mutableListOf(subSegmentToFill)
+                                mutableListOf(subSegmentToFill)
                             )
                         )
                     ),
-//                        subSegmentToFill
                 )
             )
         }
@@ -87,15 +86,29 @@ open class Util {
                         Segment(
                             segment.id, segment.segmentName,
                             user,
-                            mutableListOf( subSegmentToFill)
+                            mutableListOf(subSegmentToFill)
                         )
                     ),
-//                subSegmentToFill
                 )
             )
         )
 
         return subSegmentToFill
+    }
+
+    fun idSequenceUser(userRepository: UserRepository): Long {
+
+        var idSequenceOK = false
+        var idSequence = 1
+
+        while (!idSequenceOK) {
+            if (userRepository.findById(idSequence.toLong()).isPresent) {
+                idSequence++
+            } else {
+                idSequenceOK = true
+            }
+        }
+        return idSequence.toLong()
     }
 
     fun idSequenceSegment(segmentRepository: SegmentRepository): Long {

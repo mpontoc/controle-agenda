@@ -2,7 +2,9 @@ package io.github.controleagenda.controller
 
 import io.github.controleagenda.model.User
 import io.github.controleagenda.model.dto.UserDTO
+import io.github.controleagenda.repository.UserRepository
 import io.github.controleagenda.services.UserService
+import io.github.controleagenda.util.Util
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -16,6 +18,11 @@ class UserController {
 
     @Autowired
     lateinit var userService: UserService
+
+    @Autowired
+    lateinit var userRepository: UserRepository
+
+    val util = Util()
 
     @GetMapping
     fun getAllUsers() =
@@ -32,8 +39,10 @@ class UserController {
         uriComponentsBuilder: UriComponentsBuilder,
         request: HttpServletRequest
     ): ResponseEntity<*> {
+
+        val idSequence = util.idSequenceUser(userRepository)
+        user.id = idSequence
         val response = userService.addUser(user)
-        val idSequence = response.id
         val uri = uriComponentsBuilder.path("segmentos/${idSequence}/").build().toUri()
         return ResponseEntity.created(uri).body(response)
 

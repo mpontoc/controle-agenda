@@ -26,26 +26,10 @@ class UserServiceImpl : UserService {
 
     override fun addUser(user: User): UserDTO {
 
-        var userID: Long = userRepository.findAll().size.toLong()
-        if (userID > 0)
-            userID++
-        else
-            userID = 1
+        userRepository.save(user)
 
-        userRepository.save(User(userID, user.userName, user.password))
+        util.initSegments(user.id!!, userRepository, segmentRepository, subSegmentRepository)
 
-        util.initSegments(userID, userRepository,  segmentRepository, subSegmentRepository)
-
-//        val segment = segmentRepository.save(Segment(1, "default"))
-//        val subSegment = subSegmentRepository.save(SubSegment(1, "tarefa", "fdsjakfl"))
-//
-//        userRepository.save(
-//            User(
-//                1, user.userName, user.password,
-//                segment,
-//                subSegment
-//            )
-//        )
         return UserDTO(
             user.id!!,
             user.userName!!,
