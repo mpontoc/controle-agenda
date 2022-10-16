@@ -11,7 +11,7 @@ import io.github.controleagenda.model.dto.SegmentResponse
 import io.github.controleagenda.model.dto.SubSegmentDTO
 import io.github.controleagenda.repository.SegmentRepository
 import io.github.controleagenda.repository.SubSegmentRepository
-import io.github.controleagenda.repository.UserRepository
+import io.github.controleagenda.repository.UsersRepository
 import io.github.controleagenda.services.SegmentService
 import io.github.controleagenda.util.Util
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service
 class SegmentServiceImpl : SegmentService {
 
     @Autowired
-    lateinit var userRepository: UserRepository
+    lateinit var usersRepository: UsersRepository
 
     @Autowired
     lateinit var segmentRepository: SegmentRepository
@@ -32,20 +32,20 @@ class SegmentServiceImpl : SegmentService {
 
     val util = Util()
 
-    override fun getAllSegments(userId: Long): SegmentToReturn {
-        val user = userRepository.findUserById(userId)
-        val allSegments: MutableList<Segment> = segmentRepository.findSegmentsFromUserID(userId)
-        val allSubSegments: MutableList<SubSegment> = segmentRepository.findSubSegmentsFromUserID(userId)
+    override fun getAllSegments(usersId: Long): SegmentToReturn {
+        val users = usersRepository.findUsersById(usersId)
+        val allSegments: MutableList<Segment> = segmentRepository.findSegmentsFromusersID(usersId)
+        val allSubSegments: MutableList<SubSegment> = segmentRepository.findSubSegmentsFromusersID(usersId)
         val segments: MutableList<SegmentDTO> = mutableListOf()
         val subSegments: MutableList<SubSegmentDTO> = mutableListOf()
 
-        return util.segmentToReturn(allSubSegments, subSegments, allSegments, segments, user)
+        return util.segmentToReturn(allSubSegments, subSegments, allSegments, segments, users)
     }
 
-    override fun getSegmentById(userId: Long, segmentId: Long): SegmentOnlyOneToReturn {
+    override fun getSegmentById(usersId: Long, segmentId: Long): SegmentOnlyOneToReturn {
 
-        val segment = segmentRepository.findSegmentFromUserID(userId, segmentId)
-        val user = userRepository.findUserById(userId)
+        val segment = segmentRepository.findSegmentFromusersID(usersId, segmentId)
+        val users = usersRepository.findUsersById(usersId)
         val allSubSegments: MutableList<SubSegment> = segmentRepository.findSubSegmentsFromSegmentID(segmentId)
 
         val subSegmentToReturn: MutableList<SubSegmentDTO> = mutableListOf()
@@ -63,7 +63,7 @@ class SegmentServiceImpl : SegmentService {
         }
 
         return SegmentOnlyOneToReturn(
-            user,
+            users,
             SegmentDTO(
                 segment.id, segment.segmentName,
                 subSegmentToReturn.toMutableList()
@@ -71,11 +71,11 @@ class SegmentServiceImpl : SegmentService {
         )
     }
 
-    override fun createSegment(userId: Long, segment: Segment): SegmentToReturn {
+    override fun createSegment(usersId: Long, segment: Segment): SegmentToReturn {
 
-        val user = userRepository.findUserById(userId)
-        val userToSet = userRepository.getById(userId)
-        var allSegments = segmentRepository.findSegmentsFromUserID(userId)
+        val users = usersRepository.findUsersById(usersId)
+        val usersToSet = usersRepository.getById(usersId)
+        var allSegments = segmentRepository.findSegmentsFromusersID(usersId)
         val segments: MutableList<SegmentDTO> = mutableListOf()
         val subSegments: MutableList<SubSegmentDTO?> = mutableListOf()
 
@@ -89,13 +89,13 @@ class SegmentServiceImpl : SegmentService {
                 )
 
             util.createSubSegmentDefault(
-                userToSet,
-                userRepository,
+                usersToSet,
+                usersRepository,
                 segmentToFill,
                 segmentRepository,
                 subSegmentRepository
             )
-            allSegments = segmentRepository.findSegmentsFromUserID(userId)
+            allSegments = segmentRepository.findSegmentsFromusersID(usersId)
 
 
             val allSubSegments: MutableList<SubSegment> =
@@ -114,25 +114,25 @@ class SegmentServiceImpl : SegmentService {
                     )
                 )
             }
-//            return util.segmentToReturn(allSubSegments, subSegments, allSegments, segments, user)
+//            return util.segmentToReturn(allSubSegments, subSegments, allSegments, segments, users)
             return SegmentToReturn(
-                user,
+                users,
                 mutableListOf(SegmentDTO(segmentToFill.id, segmentToFill.segmentName, subSegments)),
             )
         } else throw BackendException("Atingiu a quantidade máxima Segmentos -> qtd max = 10")
     }
 
-    override fun updateSegment(userId: Long, segment: Segment): SegmentToReturn {
+    override fun updateSegment(usersId: Long, segment: Segment): SegmentToReturn {
 
-        val user = userRepository.findUserById(userId)
-        val allSubSegments = segmentRepository.findSubSegmentsFromUserID(userId)
+        val users = usersRepository.findUsersById(usersId)
+        val allSubSegments = segmentRepository.findSubSegmentsFromusersID(usersId)
         val segments: MutableList<SegmentDTO> = ArrayList()
         val subSegments: MutableList<SubSegmentDTO> = ArrayList()
 
         val segmentToUpdate: Segment
 
         try {
-            segmentToUpdate = segmentRepository.findSegmentFromUserID(userId, segment.id)
+            segmentToUpdate = segmentRepository.findSegmentFromusersID(usersId, segment.id)
         } catch (e: Exception) {
             throw NotFoundException("Segmento com o id ${segment.id} não existe no banco de dados")
         }
@@ -142,19 +142,19 @@ class SegmentServiceImpl : SegmentService {
                 Segment(
                     segment.id,
                     segment.segmentName,
-                    segmentToUpdate.user,
+                    segmentToUpdate.users,
                     segmentToUpdate.subSegment
                 )
             )
-            val allSegments = segmentRepository.findSegmentsFromUserID(userId)
+            val allSegments = segmentRepository.findSegmentsFromusersID(usersId)
 
-            return util.segmentToReturn(allSubSegments, subSegments, allSegments, segments, user)
+            return util.segmentToReturn(allSubSegments, subSegments, allSegments, segments, users)
         } else throw NotFoundException("Segmento com o id ${segment.id} não existe no banco de dados")
     }
 
-    override fun deleteSegment(userId: Long, segmentId: Long): String {
+    override fun deleteSegment(usersId: Long, segmentId: Long): String {
 
-        val segmentToDelete = segmentRepository.findSegmentFromUserID(userId, segmentId)
+        val segmentToDelete = segmentRepository.findSegmentFromusersID(usersId, segmentId)
 
         segmentToDelete.let {
             for (segment in util.segments)

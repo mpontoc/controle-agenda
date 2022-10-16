@@ -2,12 +2,12 @@ package io.github.controleagenda.model
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.github.controleagenda.model.dto.SegmentDTO
-import io.github.controleagenda.model.dto.UserDTO
+import io.github.controleagenda.model.dto.UsersDTO
 
 data class SegmentToReturn(
 
-    @JsonProperty("user")
-    val user: UserDTO,
+    @JsonProperty("users")
+    val users: UsersDTO,
     @JsonProperty("segment")
     val segment: MutableList<SegmentDTO>
 
@@ -15,8 +15,8 @@ data class SegmentToReturn(
 
 data class SegmentOnlyOneToReturn(
 
-    @JsonProperty("user")
-    val user: UserDTO,
+    @JsonProperty("users")
+    val users: UsersDTO,
     @JsonProperty("segment")
     val segment: SegmentDTO
 

@@ -1,11 +1,17 @@
 package io.github.controleagenda
 
 import org.springframework.boot.SpringApplication
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
+
+//@EnableJpaAuditing
+@EnableJpaRepositories(basePackages = ["io.github.*"])
 @SpringBootApplication
-@EnableJpaAuditing
+//@EnableAutoConfiguration(exclude=[DataSourceAutoConfiguration::class])
 class ControleAgendaApplication
 
 fun main(args: Array<String>) {

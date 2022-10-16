@@ -17,7 +17,7 @@ data class Segment @JvmOverloads constructor(
     val segmentName: String = "segmentDefault",
 
     @ManyToOne(fetch = FetchType.EAGER)
-    val user: User? = null,
+    val users: Users? = null,
 
     @OneToMany(mappedBy = "segment", cascade = [CascadeType.ALL], orphanRemoval = true)
     val subSegment: MutableList<SubSegment?> = mutableListOf()

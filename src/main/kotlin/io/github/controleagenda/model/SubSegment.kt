@@ -18,7 +18,7 @@ data class SubSegment @JvmOverloads constructor(
     val message: String = "aqui descreva sua tarefa",
 
     @ManyToOne(fetch = FetchType.EAGER)
-    val user: User? = null,
+    val users: Users? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
     val segment: Segment? = null

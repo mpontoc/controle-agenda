@@ -1,8 +1,8 @@
 package io.github.controleagenda.model.dto
 
-data class UserDTO(
+data class UsersDTO(
 
     val id: Long,
-    val userName: String
+    val usersName: String
 
 )

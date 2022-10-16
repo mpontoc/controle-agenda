@@ -13,7 +13,7 @@ import org.springframework.web.util.UriComponentsBuilder
 import javax.validation.Valid
 
 @RestController
-@RequestMapping("/user/{userId}/segmentos/{segmentId}/sub-segmentos")
+@RequestMapping("/users/{usersId}/segmentos/{segmentId}/sub-segmentos")
 class SubSegmentController {
 
     @Autowired
@@ -25,35 +25,35 @@ class SubSegmentController {
 
     @PostMapping
     fun createSubSegment(
-        @PathVariable userId: Long,
+        @PathVariable usersId: Long,
         @PathVariable segmentId: Long,
         @RequestBody @Valid subSegment: SubSegment,
         uriBuilder: UriComponentsBuilder
     ): ResponseEntity<*> {
         val idSequence = util.idSequenceSubSegment(subSegmentRepository)
         subSegment.id = idSequence
-        val response = subSegmentService.createSubSegment(userId, segmentId, subSegment)
+        val response = subSegmentService.createSubSegment(usersId, segmentId, subSegment)
         val uri = uriBuilder.path("segmentos/${idSequence}/").build().toUri()
         return ResponseEntity.created(uri).body(response)
     }
 
     @PutMapping
     fun editSubSegment(
-        @PathVariable userId: Long,
+        @PathVariable usersId: Long,
         @PathVariable segmentId: Long,
         @RequestBody subSegment: SubSegment
     ): ResponseEntity<SubSegmentDTO> {
-        return ResponseEntity.ok(subSegmentService.updateSubSegment(userId, subSegment))
+        return ResponseEntity.ok(subSegmentService.updateSubSegment(usersId, subSegment))
     }
 
     @DeleteMapping("/{subSegmentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteSubSegment(
-        @PathVariable userId: Long,
+        @PathVariable usersId: Long,
         @PathVariable segmentId: Long,
         @PathVariable subSegmentId: Long,
     ) {
-        subSegmentService.deleteSubSegment(userId, segmentId, subSegmentId)
+        subSegmentService.deleteSubSegment(usersId, segmentId, subSegmentId)
     }
 }
 

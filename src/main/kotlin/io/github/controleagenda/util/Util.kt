@@ -3,14 +3,14 @@ package io.github.controleagenda.util
 import io.github.controleagenda.model.Segment
 import io.github.controleagenda.model.SegmentToReturn
 import io.github.controleagenda.model.SubSegment
-import io.github.controleagenda.model.User
+import io.github.controleagenda.model.Users
 import io.github.controleagenda.model.dto.SegmentDTO
 import io.github.controleagenda.model.dto.SegmentResponse
 import io.github.controleagenda.model.dto.SubSegmentDTO
-import io.github.controleagenda.model.dto.UserDTO
+import io.github.controleagenda.model.dto.UsersDTO
 import io.github.controleagenda.repository.SegmentRepository
 import io.github.controleagenda.repository.SubSegmentRepository
-import io.github.controleagenda.repository.UserRepository
+import io.github.controleagenda.repository.UsersRepository
 
 open class Util {
 
@@ -22,13 +22,13 @@ open class Util {
         SubSegment(idSequenceSubSegment(subSegmentRepository), "crie a sua tarefa", "aqui descreva sua tarefa")
 
     fun initSegments(
-        userID: Long,
-        userRepository: UserRepository,
+        usersID: Long,
+        usersRepository: UsersRepository,
         segmentRepository: SegmentRepository,
         subSegmentRepository: SubSegmentRepository
     ) {
 
-        val user: User = userRepository.getById(userID)
+        val users: Users = usersRepository.getById(usersID)
         val subSegmentDefaultToFill = subSegmentDefault(subSegmentRepository)
 
         for (segment in segments) {
@@ -38,18 +38,18 @@ open class Util {
                     idSequenceSubSegment(subSegmentRepository),
                     subSegmentDefaultToFill.subSegmentName,
                     subSegmentDefaultToFill.message,
-                    user,
+                    users,
                     segmentToFill
                 )
             )
-            userRepository.save(
-                User(
-                    user.id, user.userName, user.password,
+            usersRepository.save(
+                Users(
+                    users.id, users.usersName, users.password,
                     mutableListOf(
                         segmentRepository.save(
                             Segment(
                                 segmentToFill.id, segmentToFill.segmentName,
-                                user,
+                                users,
                                 mutableListOf(subSegmentToFill)
                             )
                         )
@@ -60,8 +60,8 @@ open class Util {
     }
 
     fun createSubSegmentDefault(
-        user: User,
-        userRepository: UserRepository,
+        users: Users,
+        usersRepository: UsersRepository,
         segment: Segment,
         segmentRepository: SegmentRepository,
         subSegmentRepository: SubSegmentRepository
@@ -74,18 +74,18 @@ open class Util {
                 subSegmentDefaultToFill.id,
                 subSegmentDefaultToFill.subSegmentName,
                 subSegmentDefaultToFill.message,
-                user,
+                users,
                 segment
             )
         )
-        userRepository.save(
-            User(
-                user.id, user.userName, user.password,
+        usersRepository.save(
+            Users(
+                users.id, users.usersName, users.password,
                 mutableListOf(
                     segmentRepository.save(
                         Segment(
                             segment.id, segment.segmentName,
-                            user,
+                            users,
                             mutableListOf(subSegmentToFill)
                         )
                     ),
@@ -96,13 +96,13 @@ open class Util {
         return subSegmentToFill
     }
 
-    fun idSequenceUser(userRepository: UserRepository): Long {
+    fun idSequenceusers(usersRepository: UsersRepository): Long {
 
         var idSequenceOK = false
         var idSequence = 1
 
         while (!idSequenceOK) {
-            if (userRepository.findById(idSequence.toLong()).isPresent) {
+            if (usersRepository.findById(idSequence.toLong()).isPresent) {
                 idSequence++
             } else {
                 idSequenceOK = true
@@ -146,7 +146,7 @@ open class Util {
         subSegments: MutableList<SubSegmentDTO>,
         allSegments: MutableList<Segment>,
         segments: MutableList<SegmentDTO>,
-        user: UserDTO
+        users: UsersDTO
     ): SegmentToReturn {
         for (subSegment in allSubSegments) {
             subSegments.add(
@@ -186,7 +186,7 @@ open class Util {
             )
         }
         return SegmentToReturn(
-            user,
+            users,
             segments
         )
     }

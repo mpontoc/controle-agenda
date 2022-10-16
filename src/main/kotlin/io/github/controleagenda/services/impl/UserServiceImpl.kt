@@ -1,20 +1,20 @@
 package io.github.controleagenda.services.impl
 
-import io.github.controleagenda.model.User
-import io.github.controleagenda.model.dto.UserDTO
+import io.github.controleagenda.model.Users
+import io.github.controleagenda.model.dto.UsersDTO
 import io.github.controleagenda.repository.SegmentRepository
 import io.github.controleagenda.repository.SubSegmentRepository
-import io.github.controleagenda.repository.UserRepository
-import io.github.controleagenda.services.UserService
+import io.github.controleagenda.repository.UsersRepository
+import io.github.controleagenda.services.UsersService
 import io.github.controleagenda.util.Util
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class UserServiceImpl : UserService {
+class userserviceImpl : UsersService {
 
     @Autowired
-    lateinit var userRepository: UserRepository
+    lateinit var usersRepository: UsersRepository
 
     @Autowired
     lateinit var segmentRepository: SegmentRepository
@@ -24,37 +24,37 @@ class UserServiceImpl : UserService {
 
     val util = Util()
 
-    override fun addUser(user: User): UserDTO {
+    override fun addusers(users: Users): UsersDTO {
 
-        userRepository.save(user)
+        usersRepository.save(users)
 
-        util.initSegments(user.id!!, userRepository, segmentRepository, subSegmentRepository)
+        util.initSegments(users.id!!, usersRepository, segmentRepository, subSegmentRepository)
 
-        return UserDTO(
-            user.id!!,
-            user.userName!!,
+        return UsersDTO(
+            users.id!!,
+            users.usersName!!,
         )
     }
 
-    override fun deleteUser(id: Long) {
-        val userDelete = userRepository.deleteById(id)
-        println("O usuario $userDelete foi deletado com sucesso")
+    override fun deleteusers(id: Long) {
+        val usersDelete = usersRepository.deleteById(id)
+        println("O usuario $usersDelete foi deletado com sucesso")
     }
 
-    override fun getUserById(id: Long): UserDTO {
+    override fun getusersById(id: Long): UsersDTO {
 
-        return userRepository.findUserById(id)
+        return usersRepository.findUsersById(id)
 
     }
 
-    override fun getAllUsers(): MutableList<User?> {
+    override fun getAllusers(): MutableList<Users?> {
 
-        return userRepository.findAll()
+        return usersRepository.findAll()
     }
 
-    override fun updateUser(id: Long, user: User): User {
+    override fun updateusers(id: Long, users: Users): Users {
 
-        return user
+        return users
     }
 
 

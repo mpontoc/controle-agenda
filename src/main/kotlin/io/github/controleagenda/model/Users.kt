@@ -8,20 +8,20 @@ import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Size
 
 @Entity
-@Table(name = "user")
-data class User  @JvmOverloads constructor(
+@Table(name = "users")
+data class Users  @JvmOverloads constructor(
 
     @Id
     var id: Long? = 1,
     @field:NotEmpty
     @field:Size(max = 20, message = "Campo 'sub_segment_name' - Excedeu max de 20 Caracteres para o nome de Usuario")
-    val userName: String? = "",
+    val usersName: String? = "",
     val password: String? = "",
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @OneToMany(mappedBy = "users", orphanRemoval = true)
     val segment: MutableList<Segment?> = mutableListOf(),
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @OneToMany(mappedBy = "users", orphanRemoval = true)
     val subSegment: MutableList<SubSegment?> = mutableListOf()
 
 )

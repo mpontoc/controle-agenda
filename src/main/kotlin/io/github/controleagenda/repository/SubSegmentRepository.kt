@@ -14,15 +14,15 @@ interface SubSegmentRepository : JpaRepository<SubSegment, Long> {
 
     fun findSubSegmentById(id: Long): SubSegment
 
-    @Query("FROM SubSegment WHERE user_id = :userId")
-    fun findSubSegmentsFromUserId(@Param("userId") userId: Long): MutableList<SubSegment>
+    @Query("FROM SubSegment WHERE users_id = :usersId")
+    fun findSubSegmentsFromusersId(@Param("usersId") usersId: Long): MutableList<SubSegment>
 
-    @Query("FROM SubSegment WHERE id = :subSegmentId AND user_id = :userId")
-    fun findSubSegmentFromUserId(@Param("userId") userId: Long, @Param("subSegmentId") subSegmentId: Long): SubSegment
+    @Query("FROM SubSegment WHERE id = :subSegmentId AND users_id = :usersId")
+    fun findSubSegmentFromusersId(@Param("usersId") usersId: Long, @Param("subSegmentId") subSegmentId: Long): SubSegment
 
-    @Query("FROM SubSegment WHERE id = :subSegmentId AND user_id = :userId AND segment_id = :segmentId")
-    fun findSubSegmentFromUserIdAndSegmentId(
-        @Param("userId") userId: Long,
+    @Query("FROM SubSegment WHERE id = :subSegmentId AND users_id = :usersId AND segment_id = :segmentId")
+    fun findSubSegmentFromusersIdAndSegmentId(
+        @Param("usersId") usersId: Long,
         @Param("segmentId") segmentId: Long,
         @Param("subSegmentId") subSegmentId: Long
     ): SubSegment

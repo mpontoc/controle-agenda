@@ -6,9 +6,9 @@ import io.github.controleagenda.model.SegmentToReturn
 
 interface SegmentService {
 
-    fun getAllSegments(userId: Long): SegmentToReturn
-    fun getSegmentById(userId: Long, segmentId: Long): SegmentOnlyOneToReturn
-    fun createSegment(userId: Long, segment: Segment): SegmentToReturn
-    fun updateSegment(userId: Long, segment: Segment): SegmentToReturn
-    fun deleteSegment(userId: Long, segmentId: Long): String
+    fun getAllSegments(usersId: Long): SegmentToReturn
+    fun getSegmentById(usersId: Long, segmentId: Long): SegmentOnlyOneToReturn
+    fun createSegment(usersId: Long, segment: Segment): SegmentToReturn
+    fun updateSegment(usersId: Long, segment: Segment): SegmentToReturn
+    fun deleteSegment(usersId: Long, segmentId: Long): String
 }

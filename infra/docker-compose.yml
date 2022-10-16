@@ -16,7 +16,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: controle_agenda
-      MYSQL_USER: root
+      MYSQL_users: root
       MYSQL_PASSWORD: root
     volumes:
       - ${PWD}/mariadb:/var/lib/mysql
