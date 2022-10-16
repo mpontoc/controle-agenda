@@ -1,1 +1,1 @@
-web: java -jar build/libs/controleagenda-0.0.1-SNAPSHOT.jar
+web: java -Dserver.port=$PORT -jar target/controleagenda-0.0.1-SNAPSHOT.jar
