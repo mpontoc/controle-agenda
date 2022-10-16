@@ -5,15 +5,15 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
-@SpringBootTest
-class ControleagendaApplicationTests {
+//@SpringBootTest
+//class ControleagendaApplicationTests {
 
-	@Autowired
-	val hello: Hello? = null
+//	@Autowired
+//	val hello: Hello? = null
+//
+//	@Test
+//	fun contextLoads() {
+//		hello?.test()
+//	}
 
-	@Test
-	fun contextLoads() {
-		hello?.test()
-	}
-
-}
+//}
