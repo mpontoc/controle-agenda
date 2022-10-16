@@ -34,7 +34,7 @@ dependencies {
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
 }
 
@@ -50,30 +50,9 @@ tasks.test {
     finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
-dependencies {
-    implementation("commons-io:commons-io:2.6")
-}
-
-java {
-    withJavadocJar()
-    withSourcesJar()
-}
-
-tasks.withType<Jar>() {
-
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    manifest {
-        attributes["Main-Class"] = "ControleagendaApplication.kt"
-    }
-
-    configurations["compileClasspath"].forEach { file: File ->
-        from(zipTree(file.absoluteFile))
+tasks {
+    register("stage") {
+        dependsOn(clean, build)
     }
 }
 
