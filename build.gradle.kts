@@ -26,6 +26,8 @@ dependencies {
     implementation("io.rest-assured:kotlin-extensions:5.1.1")
     implementation("junit:junit:4.13.1")
     runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("com.h2database:h2")
+
 //    runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
 //    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
