@@ -12,6 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder
 import javax.servlet.http.HttpServletRequest
 import javax.validation.Valid
 
+@CrossOrigin
 @RestController
 @RequestMapping("/users")
 class usersController {
@@ -33,6 +34,7 @@ class usersController {
         return userservice.getusersById(id)
     }
 
+    @CrossOrigin
     @PostMapping
     fun addusers(
         @RequestBody @Valid users: Users,

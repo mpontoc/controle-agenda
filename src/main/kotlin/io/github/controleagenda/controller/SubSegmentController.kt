@@ -23,6 +23,7 @@ class SubSegmentController {
     lateinit var subSegmentRepository: SubSegmentRepository
     val util = Util()
 
+    @CrossOrigin
     @PostMapping
     fun createSubSegment(
         @PathVariable usersId: Long,
@@ -37,6 +38,7 @@ class SubSegmentController {
         return ResponseEntity.created(uri).body(response)
     }
 
+    @CrossOrigin
     @PutMapping
     fun editSubSegment(
         @PathVariable usersId: Long,
@@ -46,6 +48,7 @@ class SubSegmentController {
         return ResponseEntity.ok(subSegmentService.updateSubSegment(usersId, subSegment))
     }
 
+    @CrossOrigin
     @DeleteMapping("/{subSegmentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteSubSegment(

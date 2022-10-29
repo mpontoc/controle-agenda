@@ -25,10 +25,12 @@ class SegmentController {
 
     val util = Util()
 
+    @CrossOrigin
     @GetMapping("/all")
     fun getAllSegments(@PathVariable("usersId") usersId: Long) =
         segmentService.getAllSegments(usersId)
 
+    @CrossOrigin
     @GetMapping("/{segmentId}")
     fun getSegmentById(
         @PathVariable("usersId") usersId: Long,
@@ -37,6 +39,7 @@ class SegmentController {
         return ResponseEntity.ok(segmentService.getSegmentById(usersId, segmentId))
     }
 
+    @CrossOrigin
     @PostMapping
     fun createSegment(
         @PathVariable("usersId") usersId: Long,
@@ -54,6 +57,7 @@ class SegmentController {
         return ResponseEntity.created(uri).body(response)
     }
 
+    @CrossOrigin
     @PutMapping
     fun editSegment(
         @PathVariable("usersId") usersId: Long,
@@ -62,6 +66,7 @@ class SegmentController {
         return ResponseEntity.ok(segmentService.updateSegment(usersId, segment))
     }
 
+    @CrossOrigin
     @DeleteMapping("/{segmentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteSegment(
